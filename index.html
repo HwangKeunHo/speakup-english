@@ -2330,7 +2330,7 @@ function renderStudySession() {
       if (!repeat100Active) {
         content += `
           <div class="dual-action-row">
-            <button class="dual-action-btn listen-btn" onclick="playListen3x()">🔊 다시듣기</button>
+            <button class="dual-action-btn listen-btn" onclick="playListen3x()">🔊 듣기</button>
             <button class="dual-action-btn speak-btn" onclick="recordStudyStep()">🎤 말하기</button>
           </div>
           <div style="display:flex;gap:6px;margin-top:4px">
@@ -2437,11 +2437,11 @@ function updateRecTimer() {
   el.textContent = `${remain}초 남음`;
 }
 
-// ===== 다시듣기: 3회 반복 재생 =====
+// ===== 듣기: 반복 재생 (두번째만 설정 배속 적용) =====
 function playListen3x() {
   if (!studySession) return;
   const s = studySession.sentences[studySession.currentIndex];
-  const speed = state.settings.repeatSpeed || 1.0;
+  const secondSpeed = state.settings.repeatSpeed || 1.0;
   let count = 0;
   const maxRep = state.settings.listenRepeat;
 
@@ -2450,6 +2450,8 @@ function playListen3x() {
     count++;
     incrementSentenceCount('listen');
     renderStudySession();
+    // 두번째 발화만 설정 배속 적용, 나머지는 기본 속도(1.0)
+    const speed = (count === 2) ? secondSpeed : 1.0;
     speak(s.english, speed, () => {
       if (count < maxRep) {
         setTimeout(() => playOne(), 400);
@@ -3058,7 +3060,7 @@ function renderProfile(el) {
       <div class="card-title">설정</div>
 
       <div class="setting-row">
-        <span class="setting-label">다시듣기 반복 횟수</span>
+        <span class="setting-label">듣기 반복 횟수</span>
         <div class="setting-value">
           <button class="setting-btn" onclick="changeSettingInline('listenRepeat',-1)">-</button>
           <span class="setting-num" id="set_listenRepeat">${state.settings.listenRepeat}</span>
@@ -3067,7 +3069,7 @@ function renderProfile(el) {
       </div>
 
       <div class="setting-row">
-        <span class="setting-label">다시듣기 반복 배속</span>
+        <span class="setting-label">듣기 두번째 배속</span>
         <div class="setting-value">
           <button class="setting-btn" onclick="changeRepeatSpeed(-0.1)">-</button>
           <span class="setting-num" id="set_repeatSpeed">${(state.settings.repeatSpeed || 1.0).toFixed(1)}x</span>
@@ -3094,7 +3096,7 @@ function renderProfile(el) {
       </div>
 
       <p style="font-size:12px;color:var(--text-secondary);margin-top:12px">
-        다시듣기: 설정 배속으로 반복 횟수만큼 재생<br>
+        듣기: 반복 횟수만큼 재생 (두번째만 설정 배속 적용)<br>
         발화 속도는 연습 중에도 조절 가능
       </p>
     </div>
@@ -3137,7 +3139,7 @@ function showSettings() {
       <div class="modal-title">설정</div>
 
       <div class="setting-row">
-        <span class="setting-label">다시듣기 반복 횟수</span>
+        <span class="setting-label">듣기 반복 횟수</span>
         <div class="setting-value">
           <button class="setting-btn" onclick="changeSetting('listenRepeat',-1)">-</button>
           <span class="setting-num" id="set_listenRepeat">${state.settings.listenRepeat}</span>
