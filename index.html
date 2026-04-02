@@ -1557,14 +1557,37 @@ function renderWeekChart() {
 
 // ===== MY SENTENCES TAB (Sentences + Favorites combined) =====
 let sentenceSearch = '';
-let sentenceViewMode = 'all'; // 'all' or 'favorites'
+let sentenceViewMode = 'all'; // 'all', 'favorites', 'recent', 'mostListened', 'mostSpoken'
+let sentenceShowCount = 50;
 
 function renderMySentences(el) {
   document.getElementById('headerTitle').textContent = '내 문장';
 
-  let filtered = sentenceViewMode === 'favorites'
-    ? state.sentences.filter(s => state.favorites.includes(s.id))
-    : [...state.sentences];
+  let filtered = [];
+  switch (sentenceViewMode) {
+    case 'favorites':
+      filtered = state.sentences.filter(s => state.favorites.includes(s.id));
+      break;
+    case 'recent':
+      filtered = [...state.sentences].filter(s => s.lastPracticed).sort((a, b) => {
+        const ta = new Date(a.lastPracticed || 0).getTime();
+        const tb = new Date(b.lastPracticed || 0).getTime();
+        return tb - ta;
+      });
+      break;
+    case 'mostListened':
+      filtered = [...state.sentences].filter(s => (s.listenRepeatCount || 0) > 0).sort((a, b) =>
+        (b.listenRepeatCount || 0) - (a.listenRepeatCount || 0)
+      );
+      break;
+    case 'mostSpoken':
+      filtered = [...state.sentences].filter(s => (s.speakRepeatCount || 0) > 0).sort((a, b) =>
+        (b.speakRepeatCount || 0) - (a.speakRepeatCount || 0)
+      );
+      break;
+    default:
+      filtered = [...state.sentences];
+  }
 
   if (sentenceSearch) {
     const q = sentenceSearch.toLowerCase();
@@ -1574,18 +1597,33 @@ function renderMySentences(el) {
   }
 
   const favCount = state.sentences.filter(s => state.favorites.includes(s.id)).length;
+  const recentCount = state.sentences.filter(s => s.lastPracticed).length;
+  const listenedCount = state.sentences.filter(s => (s.listenRepeatCount || 0) > 0).length;
+  const spokenCount = state.sentences.filter(s => (s.speakRepeatCount || 0) > 0).length;
+
+  const chip = (mode, label) =>
+    `<button class="filter-chip ${sentenceViewMode===mode?'active':''}" onclick="sentenceViewMode='${mode}';sentenceShowCount=50;renderMySentences(document.getElementById('mainContent'))">${label}</button>`;
 
   el.innerHTML = `
     <input class="search-box" placeholder="문장 검색..." value="${sentenceSearch}" oninput="sentenceSearch=this.value;renderMySentences(document.getElementById('mainContent'))">
-    <div class="filter-row">
-      <button class="filter-chip ${sentenceViewMode==='all'?'active':''}" onclick="sentenceViewMode='all';renderMySentences(document.getElementById('mainContent'))">전체 ${state.sentences.length}</button>
-      <button class="filter-chip ${sentenceViewMode==='favorites'?'active':''}" onclick="sentenceViewMode='favorites';renderMySentences(document.getElementById('mainContent'))">⭐ 즐겨찾기 ${favCount}</button>
+    <div class="filter-row" style="flex-wrap:wrap;gap:6px">
+      ${chip('all', `전체 ${state.sentences.length}`)}
+      ${chip('favorites', `⭐ 즐겨찾기 ${favCount}`)}
+      ${chip('recent', `🕐 최근문장 ${recentCount}`)}
+      ${chip('mostListened', `🔊 많이들은 ${listenedCount}`)}
+      ${chip('mostSpoken', `🎤 많이말한 ${spokenCount}`)}
     </div>
     ${sentenceViewMode === 'favorites' && favCount > 0 ? `
       <button class="start-btn" onclick="startFavoriteStudy()">즐겨찾기 연습 (${favCount}문장)</button>
     ` : ''}
-    ${filtered.slice(0, 50).map(s => {
+    ${filtered.slice(0, sentenceShowCount).map(s => {
       const isFav = state.favorites.includes(s.id);
+      const listenC = s.listenRepeatCount || 0;
+      const speakC = s.speakRepeatCount || 0;
+      const extraBadge = sentenceViewMode === 'mostListened' ? `<span class="practice-count-badge" style="background:#DBEAFE;color:#1E40AF">🔊 ${listenC}회</span>`
+        : sentenceViewMode === 'mostSpoken' ? `<span class="practice-count-badge" style="background:#EDE9FE;color:#5B21B6">🎤 ${speakC}회</span>`
+        : sentenceViewMode === 'recent' && s.lastPracticed ? `<span class="practice-count-badge" style="background:#FEF3C7;color:#92400E">${new Date(s.lastPracticed).toLocaleDateString('ko-KR', {month:'short',day:'numeric'})}</span>`
+        : (s.practiceCount ? `<span class="practice-count-badge">${s.practiceCount}회</span>` : '');
       return `
       <div class="sentence-item">
         <div class="sentence-item-row">
@@ -1598,15 +1636,23 @@ function renderMySentences(el) {
               <span class="sentence-level ${s.interval >= 16 ? 'level-mastered' : s.interval >= 2 ? 'level-learning' : 'level-new'}">
                 ${s.interval >= 16 ? '마스터' : s.interval >= 2 ? '학습중' : '새문장'}
               </span>
-              ${s.practiceCount ? `<span class="practice-count-badge">${s.practiceCount}회</span>` : ''}
+              ${extraBadge}
             </div>
           </div>
         </div>
       </div>`;
     }).join('')}
-    ${filtered.length > 50 ? `<p style="text-align:center;color:var(--text-secondary);font-size:13px">+ ${filtered.length - 50}개 더...</p>` : ''}
+    ${filtered.length > sentenceShowCount ? `
+      <button class="start-btn" style="background:var(--bg-secondary);color:var(--text-secondary);font-size:14px;margin-top:8px" onclick="sentenceShowCount+=50;renderMySentences(document.getElementById('mainContent'))">
+        + 더보기 (${sentenceShowCount}/${filtered.length})
+      </button>
+    ` : ''}
     ${filtered.length === 0 ? `<div style="text-align:center;padding:40px;color:var(--text-secondary)">
-      ${sentenceViewMode === 'favorites' ? '☆을 눌러 문장을 저장해보세요' : '문장이 없습니다. 설정에서 강좌를 불러오세요'}
+      ${sentenceViewMode === 'favorites' ? '☆을 눌러 문장을 저장해보세요'
+        : sentenceViewMode === 'recent' ? '아직 학습한 문장이 없습니다'
+        : sentenceViewMode === 'mostListened' ? '아직 들은 문장이 없습니다'
+        : sentenceViewMode === 'mostSpoken' ? '아직 말한 문장이 없습니다'
+        : '문장이 없습니다. 설정에서 강좌를 불러오세요'}
     </div>` : ''}
   `;
 }
