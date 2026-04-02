@@ -596,17 +596,23 @@ body {
 .dual-action-btn.speak-btn { background: linear-gradient(135deg, var(--mic), #A78BFA); color: white; }
 .dual-action-btn.repeat100-btn { background: linear-gradient(135deg, #F59E0B, #F97316); color: white; font-size: 14px; }
 
-/* Repeat counter badge */
+/* Repeat counter badges */
+.repeat-count-badges {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
 .repeat-count-badge {
   display: inline-block;
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  padding: 2px 10px;
+  padding: 3px 10px;
   border-radius: 12px;
-  margin-top: 6px;
 }
+.badge-listen { background: #DBEAFE; color: #1E40AF; }
+.badge-speak { background: #EDE9FE; color: #5B21B6; }
 
 /* Recording timer */
 .rec-timer {
@@ -614,6 +620,102 @@ body {
   color: var(--danger);
   font-weight: 600;
   margin-top: 4px;
+}
+
+/* 100-repeat popup overlay */
+.repeat100-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.repeat100-popup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+.repeat100-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.repeat100-header h3 { font-size: 16px; margin: 0; }
+.repeat100-counter {
+  font-size: 20px;
+  font-weight: 800;
+}
+.repeat100-stop {
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  color: white;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.repeat100-sentence-display {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #F0EAFF 0%, #FFF7ED 100%);
+  padding: 24px 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.repeat100-sentence-display .r100-english {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.repeat100-sentence-display .r100-korean {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+.repeat100-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+  background: #FAFAF9;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.repeat100-log-item {
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  border-radius: 12px;
+  font-size: 14px;
+  animation: log-slide-up 0.3s ease;
+}
+.repeat100-log-item.listen-log {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+.repeat100-log-item.speak-log {
+  background: #EDE9FE;
+  color: #5B21B6;
+}
+.repeat100-log-item .log-num {
+  font-weight: 800;
+  margin-right: 6px;
+}
+.repeat100-log-item .log-score {
+  float: right;
+  font-weight: 700;
+}
+@keyframes log-slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Word diff highlight */
@@ -1653,44 +1755,168 @@ function stopRecEarly() {
 // 100번 반복 모드
 let repeat100Active = false;
 let repeat100Count = 0;
+let repeat100Mode = 'listen'; // 'listen' or 'speak'
+let repeat100Logs = [];
 
-function startRepeat100() {
+function startRepeat100(mode) {
   if (!studySession) return;
   repeat100Active = true;
   repeat100Count = 0;
-  playRepeat100();
+  repeat100Mode = mode;
+  repeat100Logs = [];
+  showRepeat100Popup();
+  if (mode === 'listen') {
+    playRepeat100Listen();
+  } else {
+    startRepeat100Speak();
+  }
 }
 
 function stopRepeat100() {
   repeat100Active = false;
   window.speechSynthesis.cancel();
+  if (isRecording) stopRecognition();
+  closeRepeat100Popup();
   renderStudySession();
 }
 
-function playRepeat100() {
+function showRepeat100Popup() {
+  if (document.getElementById('repeat100Overlay')) return;
+  const s = studySession.sentences[studySession.currentIndex];
+  const modeLabel = repeat100Mode === 'listen' ? '🔊 듣기 100번 반복' : '🎤 말하기 100번 반복';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'repeat100-overlay';
+  overlay.id = 'repeat100Overlay';
+  overlay.innerHTML = `
+    <div class="repeat100-popup">
+      <div class="repeat100-header">
+        <h3>${modeLabel}</h3>
+        <span class="repeat100-counter" id="r100Counter">0/100</span>
+        <button class="repeat100-stop" onclick="stopRepeat100()">⏹ 멈추기</button>
+      </div>
+      <div class="repeat100-sentence-display">
+        <div class="r100-english">${escHtml(s.english)}</div>
+        <div class="r100-korean">${escHtml(s.korean)}</div>
+      </div>
+      <div class="repeat100-log" id="r100Log"></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function closeRepeat100Popup() {
+  const ov = document.getElementById('repeat100Overlay');
+  if (ov) ov.remove();
+}
+
+function updateRepeat100UI() {
+  const counter = document.getElementById('r100Counter');
+  if (counter) counter.textContent = `${repeat100Count}/100`;
+
+  const logEl = document.getElementById('r100Log');
+  if (logEl && repeat100Logs.length > 0) {
+    const last = repeat100Logs[repeat100Logs.length - 1];
+    const item = document.createElement('div');
+    item.className = `repeat100-log-item ${last.type}-log`;
+    item.innerHTML = `<span class="log-num">#${last.num}</span>${last.text}${last.score !== undefined ? `<span class="log-score">${last.score}%</span>` : ''}`;
+    logEl.prepend(item);
+  }
+}
+
+function incrementSentenceCount(type) {
+  if (!studySession) return;
+  const s = studySession.sentences[studySession.currentIndex];
+  const found = state.sentences.find(x => x.id === s.id);
+  if (found) {
+    if (type === 'listen') {
+      found.listenRepeatCount = (found.listenRepeatCount || 0) + 1;
+    } else {
+      found.speakRepeatCount = (found.speakRepeatCount || 0) + 1;
+    }
+    saveState();
+  }
+}
+
+// ===== 듣기 100번 반복 =====
+function playRepeat100Listen() {
   if (!repeat100Active || !studySession) return;
   const s = studySession.sentences[studySession.currentIndex];
   const speed = state.settings.repeatSpeed || 1.0;
   repeat100Count++;
+  incrementSentenceCount('listen');
 
-  // 문장별 반복 누적
-  const found = state.sentences.find(x => x.id === s.id);
-  if (found) {
-    found.totalRepeatCount = (found.totalRepeatCount || 0) + 1;
-    saveState();
-  }
+  repeat100Logs.push({ num: repeat100Count, type: 'listen', text: s.english });
+  updateRepeat100UI();
 
-  renderStudySession(); // update counter
   if (repeat100Count >= 100) {
     repeat100Active = false;
-    showToast('100번 반복 완료! 🎉');
+    showToast('듣기 100번 반복 완료! 🎉');
+    setTimeout(() => closeRepeat100Popup(), 1500);
     renderStudySession();
     return;
   }
   speak(s.english, speed, () => {
     if (repeat100Active) {
-      setTimeout(() => playRepeat100(), 300);
+      setTimeout(() => playRepeat100Listen(), 300);
     }
+  });
+}
+
+// ===== 말하기 100번 반복 =====
+function startRepeat100Speak() {
+  if (!repeat100Active || !studySession) return;
+  doOneSpeak100();
+}
+
+function doOneSpeak100() {
+  if (!repeat100Active || !studySession) return;
+  if (repeat100Count >= 100) {
+    repeat100Active = false;
+    showToast('말하기 100번 반복 완료! 🎉');
+    setTimeout(() => closeRepeat100Popup(), 1500);
+    renderStudySession();
+    return;
+  }
+
+  // 먼저 문장 한번 들려주고 → 녹음
+  const s = studySession.sentences[studySession.currentIndex];
+  const speed = state.settings.repeatSpeed || 1.0;
+  speak(s.english, speed, () => {
+    if (!repeat100Active) return;
+    // 녹음 시작
+    startRecWithTimeout((transcript) => {
+      if (!repeat100Active) return;
+      clearInterval(recTimerInterval);
+      if (recTimeoutId) { clearTimeout(recTimeoutId); recTimeoutId = null; }
+
+      repeat100Count++;
+      incrementSentenceCount('speak');
+
+      const match = transcript ? calcMatchRate(s.english, transcript) : 0;
+      const displayText = transcript || '(인식 없음)';
+      repeat100Logs.push({ num: repeat100Count, type: 'speak', text: displayText, score: match });
+      updateRepeat100UI();
+
+      // 다음 라운드
+      setTimeout(() => doOneSpeak100(), 500);
+    }, (interim) => {
+      // 팝업 내에서 interim 표시
+      const logEl = document.getElementById('r100Log');
+      let interimEl = document.getElementById('r100Interim');
+      if (!interimEl && logEl) {
+        interimEl = document.createElement('div');
+        interimEl.id = 'r100Interim';
+        interimEl.className = 'repeat100-log-item speak-log';
+        interimEl.style.opacity = '0.6';
+        logEl.prepend(interimEl);
+      }
+      if (interimEl) {
+        interimEl.innerHTML = `<span class="log-num">#${repeat100Count + 1}</span>${escHtml(interim)}...`;
+      }
+    });
+    recStartTime = Date.now();
+    recTimerInterval = setInterval(() => {}, 1000); // timer for timeout
   });
 }
 
@@ -1707,10 +1933,19 @@ function renderStudySession() {
   document.getElementById('settingsBtn').classList.add('hidden');
   document.querySelector('.tab-bar').style.display = 'none';
 
-  const sentenceRepeatCount = (() => {
+  const sentenceStats = (() => {
     const found = state.sentences.find(x => x.id === s.id);
-    return found ? (found.totalRepeatCount || 0) : 0;
+    return {
+      listenCount: found ? (found.listenRepeatCount || 0) : 0,
+      speakCount: found ? (found.speakRepeatCount || 0) : 0,
+    };
   })();
+  const repeatBadgesHtml = `
+    <div class="repeat-count-badges">
+      <span class="repeat-count-badge badge-listen">🔊 듣기 ${sentenceStats.listenCount}회</span>
+      <span class="repeat-count-badge badge-speak">🎤 말하기 ${sentenceStats.speakCount}회</span>
+    </div>
+  `;
 
   // Speed control
   const speedOptions = [0.5, 0.7, 1.0, 1.2, 1.5];
@@ -1747,7 +1982,7 @@ function renderStudySession() {
       <div class="study-sentence-card">
         <div class="study-english">${escHtml(s.english)}</div>
         <div class="study-korean">${escHtml(s.korean)}</div>
-        <div class="repeat-count-badge">누적 반복: ${sentenceRepeatCount}회</div>
+        ${repeatBadgesHtml}
       </div>
 
       <div class="speech-area ${isRecording ? 'recording' : ''}" onclick="${isRecording ? 'stopRecEarly()' : ''}">
@@ -1787,22 +2022,16 @@ function renderStudySession() {
 
     // Dual buttons: 다시듣기 + 말하기
     if (!isRecording) {
-      if (repeat100Active) {
-        content += `
-          <div style="text-align:center;margin:12px 0">
-            <div style="font-size:15px;font-weight:700;color:var(--primary);margin-bottom:8px">🔁 100번 반복 중... ${repeat100Count}/100</div>
-            <button class="main-action-btn" onclick="stopRepeat100()" style="background:var(--danger)">⏹ 멈추기</button>
-          </div>
-        `;
-      } else {
+      if (!repeat100Active) {
         content += `
           <div class="dual-action-row">
             <button class="dual-action-btn listen-btn" onclick="playListen3x()">🔊 다시듣기</button>
             <button class="dual-action-btn speak-btn" onclick="recordStudyStep()">🎤 말하기</button>
           </div>
-          <div style="display:flex;gap:8px;margin-top:4px">
-            <button class="btn-ghost" onclick="startRepeat100()" style="flex:1;font-size:12px">🔁 100번 반복</button>
-            <button class="btn-ghost" onclick="skipToStep(3)" style="flex:1;font-size:12px">안보고 말하기 →</button>
+          <div style="display:flex;gap:6px;margin-top:4px">
+            <button class="btn-ghost" onclick="startRepeat100('listen')" style="flex:1;font-size:11px">🔊 듣기×100</button>
+            <button class="btn-ghost" onclick="startRepeat100('speak')" style="flex:1;font-size:11px">🎤 말하기×100</button>
+            <button class="btn-ghost" onclick="skipToStep(3)" style="flex:1;font-size:11px">안보고 말하기 →</button>
           </div>
         `;
       }
@@ -1816,7 +2045,7 @@ function renderStudySession() {
         <div class="study-korean" style="font-size:20px;color:var(--text)">${escHtml(s.korean)}</div>
         <div class="study-english study-hidden" id="hiddenEnglish" onclick="this.classList.remove('study-hidden')">${escHtml(s.english)}</div>
         <div style="font-size:11px;color:#A78BFA;margin-top:4px">영어 문장을 터치하면 볼 수 있어요</div>
-        <div class="repeat-count-badge">누적 반복: ${sentenceRepeatCount}회</div>
+        ${repeatBadgesHtml}
       </div>
       <div class="speech-area ${isRecording ? 'recording' : ''}" onclick="${isRecording ? 'stopRecEarly()' : ''}">
         ${isRecording ? `
@@ -1911,16 +2140,10 @@ function playListen3x() {
   let count = 0;
   const maxRep = state.settings.listenRepeat;
 
-  // 누적 반복 카운트
-  const found = state.sentences.find(x => x.id === s.id);
-
   function playOne() {
     if (count >= maxRep || !studySession) return;
     count++;
-    if (found) {
-      found.totalRepeatCount = (found.totalRepeatCount || 0) + 1;
-      saveState();
-    }
+    incrementSentenceCount('listen');
     renderStudySession();
     speak(s.english, speed, () => {
       if (count < maxRep) {
@@ -1941,6 +2164,7 @@ function recordStudyStep() {
   startRecWithTimeout((transcript) => {
     clearInterval(recTimerInterval);
     if (recTimeoutId) { clearTimeout(recTimeoutId); recTimeoutId = null; }
+    incrementSentenceCount('speak');
     handleRecResult(transcript, 1);
     renderStudySession();
   }, onInterimUpdate);
@@ -2020,6 +2244,7 @@ function recordSpeakStep() {
   startRecWithTimeout((transcript) => {
     clearInterval(recTimerInterval);
     if (recTimeoutId) { clearTimeout(recTimeoutId); recTimeoutId = null; }
+    incrementSentenceCount('speak');
     handleRecResult(transcript, 3);
     renderStudySession();
   }, onInterimUpdate);
