@@ -695,7 +695,7 @@ body {
   margin-bottom: 6px;
   border-radius: 12px;
   font-size: 14px;
-  animation: log-slide-up 0.3s ease;
+  animation: log-slide-down 0.3s ease;
 }
 .repeat100-log-item.listen-log {
   background: #DBEAFE;
@@ -713,8 +713,56 @@ body {
   float: right;
   font-weight: 700;
 }
-@keyframes log-slide-up {
-  from { opacity: 0; transform: translateY(20px); }
+.repeat100-current-sentence {
+  background: linear-gradient(135deg, #4F46E5, #7C3AED);
+  color: white;
+  padding: 20px 16px;
+  border-radius: 16px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.5;
+  box-shadow: 0 4px 16px rgba(79,70,229,0.3);
+}
+.repeat100-current-sentence .current-label {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+.repeat100-listen-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 0;
+  flex-shrink: 0;
+  background: #F8F7FF;
+  border-bottom: 1px solid var(--border);
+}
+.listen-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 2px solid var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.listen-toggle-btn.on {
+  background: var(--primary);
+  color: white;
+}
+.listen-toggle-btn.off {
+  background: white;
+  color: var(--primary);
+}
+@keyframes log-slide-down {
+  from { opacity: 0; transform: translateY(-15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -1757,6 +1805,7 @@ let repeat100Active = false;
 let repeat100Count = 0;
 let repeat100Mode = 'listen'; // 'listen' or 'speak'
 let repeat100Logs = [];
+let repeat100ListenOn = true; // 말하기 모드에서 듣기 on/off
 
 function startRepeat100(mode) {
   if (!studySession) return;
@@ -1764,11 +1813,21 @@ function startRepeat100(mode) {
   repeat100Count = 0;
   repeat100Mode = mode;
   repeat100Logs = [];
+  repeat100ListenOn = true;
   showRepeat100Popup();
   if (mode === 'listen') {
     playRepeat100Listen();
   } else {
     startRepeat100Speak();
+  }
+}
+
+function toggleRepeat100Listen() {
+  repeat100ListenOn = !repeat100ListenOn;
+  const btn = document.getElementById('r100ListenToggle');
+  if (btn) {
+    btn.className = `listen-toggle-btn ${repeat100ListenOn ? 'on' : 'off'}`;
+    btn.innerHTML = repeat100ListenOn ? '🔊 듣기 ON' : '🔇 듣기 OFF';
   }
 }
 
@@ -1791,6 +1850,13 @@ function showRepeat100Popup() {
   const s = studySession.sentences[studySession.currentIndex];
   const modeLabel = repeat100Mode === 'listen' ? '🔊 듣기 100번 반복' : '🎤 말하기 100번 반복';
 
+  const listenToggleHtml = repeat100Mode === 'speak' ? `
+    <div class="repeat100-listen-toggle">
+      <span style="font-size:12px;color:var(--text-secondary)">발음 듣기:</span>
+      <button id="r100ListenToggle" class="listen-toggle-btn on" onclick="toggleRepeat100Listen()">🔊 듣기 ON</button>
+    </div>
+  ` : '';
+
   const overlay = document.createElement('div');
   overlay.className = 'repeat100-overlay';
   overlay.id = 'repeat100Overlay';
@@ -1805,6 +1871,7 @@ function showRepeat100Popup() {
         <div class="r100-english">${escHtml(s.english)}</div>
         <div class="r100-korean">${escHtml(s.korean)}</div>
       </div>
+      ${listenToggleHtml}
       <div class="repeat100-log" id="r100Log"></div>
     </div>
   `;
@@ -1826,13 +1893,25 @@ function updateRepeat100UI() {
     const oldInterim = document.getElementById('r100Interim');
     if (oldInterim) oldInterim.remove();
 
-    const last = repeat100Logs[repeat100Logs.length - 1];
-    const item = document.createElement('div');
-    item.className = `repeat100-log-item ${last.type}-log`;
-    item.innerHTML = `<span class="log-num">#${last.num}</span>${last.text}${last.score !== undefined ? `<span class="log-score">${last.score}%</span>` : ''}`;
-    logEl.appendChild(item);
-    // 자동 스크롤 맨 아래로
-    logEl.scrollTop = logEl.scrollHeight;
+    // 전체 로그를 역순으로 렌더링 (최신이 맨 위)
+    let html = '';
+    for (let i = repeat100Logs.length - 1; i >= 0; i--) {
+      const log = repeat100Logs[i];
+      const isLatest = (i === repeat100Logs.length - 1);
+      if (isLatest) {
+        // 최신 항목: 큰 강조 박스
+        html += `<div class="repeat100-current-sentence">
+          <div class="current-label">#${log.num} ${log.type === 'listen' ? '🔊 듣기' : '🎤 말하기'}</div>
+          ${escHtml(log.text)}${log.score !== undefined ? `<div style="margin-top:6px;font-size:16px;font-weight:700">${log.score}%</div>` : ''}
+        </div>`;
+      } else {
+        // 이전 항목: 일반 로그
+        html += `<div class="repeat100-log-item ${log.type}-log">
+          <span class="log-num">#${log.num}</span>${escHtml(log.text)}${log.score !== undefined ? `<span class="log-score">${log.score}%</span>` : ''}
+        </div>`;
+      }
+    }
+    logEl.innerHTML = html;
   }
 }
 
@@ -1891,12 +1970,12 @@ function doOneSpeak100() {
     return;
   }
 
-  // 먼저 문장 한번 들려주고 → 녹음
+  // 듣기 ON이면 문장 들려주고 → 녹음, OFF이면 바로 녹음
   const s = studySession.sentences[studySession.currentIndex];
   const speed = state.settings.repeatSpeed || 1.0;
-  speak(s.english, speed, () => {
+
+  const startRecording = () => {
     if (!repeat100Active) return;
-    // 녹음 시작
     startRecWithTimeout((transcript) => {
       if (!repeat100Active) return;
       clearInterval(recTimerInterval);
@@ -1921,7 +2000,7 @@ function doOneSpeak100() {
         interimEl.id = 'r100Interim';
         interimEl.className = 'repeat100-log-item speak-log';
         interimEl.style.opacity = '0.6';
-        logEl.appendChild(interimEl);
+        logEl.prepend(interimEl);
       }
       if (interimEl) {
         interimEl.innerHTML = `<span class="log-num">#${repeat100Count + 1}</span>${escHtml(interim)}...`;
@@ -1929,7 +2008,13 @@ function doOneSpeak100() {
     });
     recStartTime = Date.now();
     recTimerInterval = setInterval(() => {}, 1000); // timer for timeout
-  });
+  };
+
+  if (repeat100ListenOn) {
+    speak(s.english, speed, startRecording);
+  } else {
+    startRecording();
+  }
 }
 
 function renderStudySession() {
