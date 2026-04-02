@@ -1666,7 +1666,7 @@ function renderMySentences(el) {
     <div class="filter-row" style="flex-wrap:wrap;gap:6px">
       ${chip('all', `전체 ${state.sentences.length}`)}
       ${chip('favorites', `⭐ 즐겨찾기 ${favCount}`)}
-      ${chip('recent', `🕐 최근문장 ${recentCount}`)}
+      ${chip('recent', `🕐 최근학습 ${recentCount}`)}
       ${chip('mostListened', `🔊 많이들은 ${listenedCount}`)}
       ${chip('mostSpoken', `🎤 많이말한 ${spokenCount}`)}
     </div>
@@ -2031,6 +2031,7 @@ function incrementSentenceCount(type) {
       found.listenRepeatCount = (found.listenRepeatCount || 0) + 1;
     } else {
       found.speakRepeatCount = (found.speakRepeatCount || 0) + 1;
+      found.lastPracticed = new Date().toISOString();
     }
     saveState();
   }
@@ -2532,6 +2533,7 @@ function handleRecResult(transcript, step) {
     const found = state.sentences.find(x => x.id === s.id);
     if (found) {
       found.lastMatchRate = match;
+      found.lastPracticed = new Date().toISOString();
       saveState();
     }
   } else {
@@ -2539,6 +2541,11 @@ function handleRecResult(transcript, step) {
     studySession.lastMatch = 0;
     studySession.lastSpoken = '(인식 없음)';
     studySession.lastDiffHtml = '<span class="word-wrong">(인식된 음성 없음)</span>';
+    const found = state.sentences.find(x => x.id === s.id);
+    if (found) {
+      found.lastPracticed = new Date().toISOString();
+      saveState();
+    }
   }
   interimTranscript = '';
 }
@@ -2918,6 +2925,7 @@ function recordFlashcard() {
       const found = state.sentences.find(x => x.id === s.id);
       if (found) {
         found.lastMatchRate = match;
+        found.lastPracticed = new Date().toISOString();
         saveState();
       }
     }
