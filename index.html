@@ -1992,19 +1992,21 @@ function doOneSpeak100() {
       // 다음 라운드
       setTimeout(() => doOneSpeak100(), 500);
     }, (interim) => {
-      // 팝업 내에서 interim 표시
+      // 팝업 내에서 interim을 강조 박스로 맨 위에 표시
       const logEl = document.getElementById('r100Log');
-      let interimEl = document.getElementById('r100Interim');
-      if (!interimEl && logEl) {
-        interimEl = document.createElement('div');
-        interimEl.id = 'r100Interim';
-        interimEl.className = 'repeat100-log-item speak-log';
-        interimEl.style.opacity = '0.6';
-        logEl.prepend(interimEl);
+      if (!logEl) return;
+      let interimBox = document.getElementById('r100Interim');
+      if (!interimBox) {
+        interimBox = document.createElement('div');
+        interimBox.id = 'r100Interim';
+        interimBox.className = 'repeat100-current-sentence';
+        interimBox.style.opacity = '0.85';
+        logEl.prepend(interimBox);
       }
-      if (interimEl) {
-        interimEl.innerHTML = `<span class="log-num">#${repeat100Count + 1}</span>${escHtml(interim)}...`;
-      }
+      interimBox.innerHTML = `
+        <div class="current-label">#${repeat100Count + 1} 🎤 말하기</div>
+        ${escHtml(interim)}...
+      `;
     });
     recStartTime = Date.now();
     recTimerInterval = setInterval(() => {}, 1000); // timer for timeout
