@@ -731,6 +731,57 @@ body {
   opacity: 0.8;
   margin-bottom: 4px;
 }
+/* Karaoke word highlighting */
+.repeat100-current-sentence .karaoke-word {
+  display: inline;
+  transition: color 0.15s, text-shadow 0.15s;
+}
+.repeat100-current-sentence .karaoke-word.spoken {
+  color: #FDE68A;
+  text-shadow: 0 0 8px rgba(253,230,138,0.6);
+}
+.repeat100-current-sentence .karaoke-word.current {
+  color: #FEF08A;
+  text-shadow: 0 0 12px rgba(254,240,138,0.8);
+  transform: scale(1.05);
+}
+/* Recording animation in 100x popup */
+.r100-rec-box {
+  background: linear-gradient(135deg, #7C3AED, #EC4899);
+  color: white;
+  padding: 24px 16px;
+  border-radius: 16px;
+  margin-bottom: 8px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.4);
+  animation: r100-rec-pulse 1.5s ease-in-out infinite;
+}
+.r100-rec-box .r100-rec-bars {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.r100-rec-box .r100-rec-bar {
+  width: 4px;
+  height: 20px;
+  background: white;
+  border-radius: 2px;
+  animation: r100-bar-bounce 0.8s ease-in-out infinite;
+}
+.r100-rec-box .r100-rec-bar:nth-child(1) { animation-delay: 0s; height: 14px; }
+.r100-rec-box .r100-rec-bar:nth-child(2) { animation-delay: 0.1s; height: 22px; }
+.r100-rec-box .r100-rec-bar:nth-child(3) { animation-delay: 0.2s; height: 28px; }
+.r100-rec-box .r100-rec-bar:nth-child(4) { animation-delay: 0.3s; height: 22px; }
+.r100-rec-box .r100-rec-bar:nth-child(5) { animation-delay: 0.4s; height: 14px; }
+@keyframes r100-bar-bounce {
+  0%, 100% { transform: scaleY(0.5); }
+  50% { transform: scaleY(1.2); }
+}
+@keyframes r100-rec-pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(124,58,237,0.4); }
+  50% { box-shadow: 0 4px 24px rgba(236,72,153,0.6); }
+}
 .repeat100-listen-toggle {
   display: flex;
   align-items: center;
@@ -1184,18 +1235,24 @@ let speakingId = 0; // cancel로 인한 onend 오발 방지용
 // studySpeedOverride: 연습 중 수동 속도 조절 (null이면 자동 패턴 사용)
 let studySpeedOverride = null;
 
-function speak(text, rate = 1.0, onEnd) {
+function speak(text, rate = 1.0, onEnd, onBoundary) {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
     const id = ++speakingId;
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'en-US';
-    // 연습 중 수동 속도가 있으면 우선, 아니면 설정 기본속도 * 전달된 rate 비율
     const baseRate = state.settings.speechRate || 1.0;
     u.rate = studySpeedOverride !== null ? studySpeedOverride : (baseRate * rate);
     if (onEnd) {
       u.onend = () => {
         if (id === speakingId) onEnd();
+      };
+    }
+    if (onBoundary) {
+      u.onboundary = (e) => {
+        if (id === speakingId && e.name === 'word') {
+          onBoundary(e.charIndex, e.charLength || 0);
+        }
       };
     }
     window.speechSynthesis.speak(u);
@@ -1940,20 +1997,24 @@ function updateRepeat100UI() {
     if (oldInterim) oldInterim.remove();
 
     // 전체 로그를 역순으로 렌더링 (최신이 맨 위)
+    // 듣기 결과: 최신은 큰 카라오케 박스 (speak 결과는 항상 작게)
     let html = '';
     for (let i = repeat100Logs.length - 1; i >= 0; i--) {
       const log = repeat100Logs[i];
       const isLatest = (i === repeat100Logs.length - 1);
-      if (isLatest) {
-        // 최신 항목: 큰 강조 박스
-        html += `<div class="repeat100-current-sentence">
-          <div class="current-label">#${log.num} ${log.type === 'listen' ? '🔊 듣기' : '🎤 말하기'}</div>
-          ${escHtml(log.text)}${log.score !== undefined ? `<div style="margin-top:6px;font-size:16px;font-weight:700">${log.score}%</div>` : ''}
+      if (isLatest && log.type === 'listen') {
+        // 듣기 최신: 큰 카라오케 박스 (단어별 span)
+        const words = log.text.split(/\s+/);
+        const karaokeHtml = words.map((w, idx) => `<span class="karaoke-word" data-idx="${idx}">${escHtml(w)}</span>`).join(' ');
+        html += `<div class="repeat100-current-sentence" id="r100Karaoke">
+          <div class="current-label">#${log.num} 🔊 듣기</div>
+          ${karaokeHtml}
         </div>`;
       } else {
-        // 이전 항목: 일반 로그
+        // 말하기 결과 및 이전 항목: 항상 작은 로그
+        const scoreHtml = log.score !== undefined ? `<span class="log-score">${log.score}%</span>` : '';
         html += `<div class="repeat100-log-item ${log.type}-log">
-          <span class="log-num">#${log.num}</span>${escHtml(log.text)}${log.score !== undefined ? `<span class="log-score">${log.score}%</span>` : ''}
+          <span class="log-num">#${log.num}</span>${escHtml(log.text)}${scoreHtml}
         </div>`;
       }
     }
@@ -1994,9 +2055,43 @@ function playRepeat100Listen() {
     return;
   }
   speak(s.english, speed, () => {
+    // TTS 끝나면 모든 단어 spoken 처리
+    const karaokeEl = document.getElementById('r100Karaoke');
+    if (karaokeEl) {
+      karaokeEl.querySelectorAll('.karaoke-word').forEach(w => {
+        w.classList.add('spoken');
+        w.classList.remove('current');
+      });
+    }
     if (repeat100Active) {
       setTimeout(() => playRepeat100Listen(), 300);
     }
+  }, (charIndex, charLength) => {
+    // 카라오케: 현재 읽고 있는 단어 하이라이트
+    const karaokeEl = document.getElementById('r100Karaoke');
+    if (!karaokeEl) return;
+    const words = karaokeEl.querySelectorAll('.karaoke-word');
+    // charIndex 기준으로 어떤 단어인지 계산
+    const text = s.english;
+    let pos = 0;
+    const wordPositions = text.split(/\s+/).map(w => {
+      const idx = text.indexOf(w, pos);
+      pos = idx + w.length;
+      return { start: idx, end: pos };
+    });
+    words.forEach((el, i) => {
+      if (i < wordPositions.length) {
+        if (charIndex >= wordPositions[i].start && charIndex < wordPositions[i].end) {
+          el.classList.add('current');
+          el.classList.remove('spoken');
+        } else if (charIndex > wordPositions[i].start) {
+          el.classList.add('spoken');
+          el.classList.remove('current');
+        } else {
+          el.classList.remove('spoken', 'current');
+        }
+      }
+    });
   });
 }
 
@@ -2020,8 +2115,29 @@ function doOneSpeak100() {
   const s = studySession.sentences[studySession.currentIndex];
   const speed = state.settings.repeatSpeed || 1.0;
 
+  // 녹음 시작 시 애니메이션 박스 표시
+  const showRecBox = () => {
+    const logEl = document.getElementById('r100Log');
+    if (!logEl) return;
+    // 기존 interim/rec 제거
+    const old = document.getElementById('r100Interim');
+    if (old) old.remove();
+    const recBox = document.createElement('div');
+    recBox.id = 'r100Interim';
+    recBox.className = 'r100-rec-box';
+    recBox.innerHTML = `
+      <div class="r100-rec-bars">
+        <div class="r100-rec-bar"></div><div class="r100-rec-bar"></div><div class="r100-rec-bar"></div>
+        <div class="r100-rec-bar"></div><div class="r100-rec-bar"></div>
+      </div>
+      <div style="font-size:14px;font-weight:700">#${repeat100Count + 1} 🎤 듣고 있습니다...</div>
+    `;
+    logEl.prepend(recBox);
+  };
+
   const startRecording = () => {
     if (!repeat100Active) return;
+    showRecBox();
     startRecWithTimeout((transcript) => {
       if (!repeat100Active) return;
       clearInterval(recTimerInterval);
@@ -2038,28 +2154,72 @@ function doOneSpeak100() {
       // 다음 라운드
       setTimeout(() => doOneSpeak100(), 500);
     }, (interim) => {
-      // 팝업 내에서 interim을 강조 박스로 맨 위에 표시
-      const logEl = document.getElementById('r100Log');
-      if (!logEl) return;
-      let interimBox = document.getElementById('r100Interim');
-      if (!interimBox) {
-        interimBox = document.createElement('div');
-        interimBox.id = 'r100Interim';
-        interimBox.className = 'repeat100-current-sentence';
-        interimBox.style.opacity = '0.85';
-        logEl.prepend(interimBox);
+      // 팝업 내에서 interim을 녹음 박스 안에 표시
+      const recBox = document.getElementById('r100Interim');
+      if (recBox) {
+        recBox.innerHTML = `
+          <div class="r100-rec-bars">
+            <div class="r100-rec-bar"></div><div class="r100-rec-bar"></div><div class="r100-rec-bar"></div>
+            <div class="r100-rec-bar"></div><div class="r100-rec-bar"></div>
+          </div>
+          <div style="font-size:18px;font-weight:800">${escHtml(interim)}...</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:4px">#${repeat100Count + 1} 🎤 말하기</div>
+        `;
       }
-      interimBox.innerHTML = `
-        <div class="current-label">#${repeat100Count + 1} 🎤 말하기</div>
-        ${escHtml(interim)}...
-      `;
     });
     recStartTime = Date.now();
-    recTimerInterval = setInterval(() => {}, 1000); // timer for timeout
+    recTimerInterval = setInterval(() => {}, 1000);
   };
 
   if (repeat100ListenOn) {
-    speak(s.english, speed, startRecording);
+    // 듣기 ON: TTS 카라오케 표시 후 녹음
+    // 임시로 듣기 로그 추가해서 카라오케 박스 보여주기
+    const tempLog = { num: '🔊', type: 'listen', text: s.english };
+    const logEl = document.getElementById('r100Log');
+    if (logEl) {
+      const oldInterim = document.getElementById('r100Interim');
+      if (oldInterim) oldInterim.remove();
+      const karaokeBox = document.createElement('div');
+      karaokeBox.id = 'r100Interim';
+      karaokeBox.className = 'repeat100-current-sentence';
+      const words = s.english.split(/\s+/);
+      karaokeBox.innerHTML = `
+        <div class="current-label">🔊 듣기</div>
+        ${words.map((w, i) => `<span class="karaoke-word" data-idx="${i}">${escHtml(w)}</span>`).join(' ')}
+      `;
+      logEl.prepend(karaokeBox);
+    }
+    speak(s.english, speed, () => {
+      // TTS 끝 → 카라오케 모든 단어 spoken
+      const kb = document.getElementById('r100Interim');
+      if (kb) kb.querySelectorAll('.karaoke-word').forEach(w => w.classList.add('spoken'));
+      setTimeout(startRecording, 200);
+    }, (charIndex) => {
+      // 카라오케 하이라이트
+      const kb = document.getElementById('r100Interim');
+      if (!kb) return;
+      const wordEls = kb.querySelectorAll('.karaoke-word');
+      const text = s.english;
+      let pos = 0;
+      const wordPositions = text.split(/\s+/).map(w => {
+        const idx = text.indexOf(w, pos);
+        pos = idx + w.length;
+        return { start: idx, end: pos };
+      });
+      wordEls.forEach((el, i) => {
+        if (i < wordPositions.length) {
+          if (charIndex >= wordPositions[i].start && charIndex < wordPositions[i].end) {
+            el.classList.add('current');
+            el.classList.remove('spoken');
+          } else if (charIndex > wordPositions[i].start) {
+            el.classList.add('spoken');
+            el.classList.remove('current');
+          } else {
+            el.classList.remove('spoken', 'current');
+          }
+        }
+      });
+    });
   } else {
     startRecording();
   }
