@@ -7,18 +7,25 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --primary: #4F46E5;
-  --primary-light: #818CF8;
-  --primary-dark: #3730A3;
+  --primary: #6366F1;
+  --primary-light: #A5B4FC;
+  --primary-dark: #4338CA;
   --success: #10B981;
+  --success-light: #D1FAE5;
   --warning: #F59E0B;
-  --danger: #EF4444;
-  --bg: #F8FAFC;
+  --warning-light: #FEF3C7;
+  --danger: #F97316;
+  --danger-light: #FFF7ED;
+  --mic: #8B5CF6;
+  --mic-light: #EDE9FE;
+  --bg: #FAFAF9;
+  --bg-warm: #FFF8F0;
   --card: #FFFFFF;
-  --text: #1E293B;
-  --text-secondary: #64748B;
-  --border: #E2E8F0;
-  --shadow: 0 1px 3px rgba(0,0,0,0.1);
+  --text: #1C1917;
+  --text-secondary: #78716C;
+  --border: #E7E5E4;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.08);
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -35,9 +42,9 @@ body {
 
 /* Header */
 .header {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
-  padding: 16px 20px;
+  padding: 14px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -45,7 +52,7 @@ body {
   top: 0;
   z-index: 100;
 }
-.header h1 { font-size: 20px; font-weight: 700; }
+.header h1 { font-size: 18px; font-weight: 700; }
 .header-btn {
   background: rgba(255,255,255,0.2);
   border: none;
@@ -58,9 +65,9 @@ body {
 }
 
 /* Main Content */
-.main { flex: 1; padding: 16px; padding-bottom: 80px; overflow-y: auto; }
+.main { flex: 1; padding: 16px; padding-bottom: 76px; overflow-y: auto; }
 
-/* Tab Navigation */
+/* Tab Navigation - 3 tabs */
 .tab-bar {
   position: fixed;
   bottom: 0;
@@ -79,30 +86,33 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 0;
-  font-size: 10px;
+  padding: 10px 0;
+  font-size: 12px;
   color: var(--text-secondary);
   cursor: pointer;
   border: none;
   background: none;
   transition: color 0.2s;
+  font-weight: 500;
 }
-.tab-item.active { color: var(--primary); }
-.tab-item .tab-icon { font-size: 22px; margin-bottom: 2px; }
+.tab-item.active { color: var(--primary); font-weight: 700; }
+.tab-item .tab-icon { font-size: 26px; margin-bottom: 2px; }
 
 /* Cards */
 .card {
   background: var(--card);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 18px;
   margin-bottom: 12px;
   box-shadow: var(--shadow);
 }
 .card-title {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--text-secondary);
   margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Dashboard */
@@ -114,13 +124,37 @@ body {
 }
 .stat-box {
   background: var(--card);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 14px 10px;
   text-align: center;
   box-shadow: var(--shadow);
 }
-.stat-number { font-size: 28px; font-weight: 700; color: var(--primary); }
+.stat-number { font-size: 26px; font-weight: 800; color: var(--primary); }
 .stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+/* Big hero start button */
+.hero-start {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(99,102,241,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  transition: transform 0.15s;
+  line-height: 1.4;
+}
+.hero-start:active { transform: scale(0.95); }
+.hero-start .hero-count { font-size: 32px; font-weight: 800; }
+.hero-start .hero-label { font-size: 14px; opacity: 0.9; }
 
 .start-btn {
   width: 100%;
@@ -128,15 +162,15 @@ body {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 18px;
+  border-radius: 14px;
+  font-size: 17px;
   font-weight: 700;
   cursor: pointer;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 14px rgba(79,70,229,0.4);
+  margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(99,102,241,0.35);
   transition: transform 0.1s;
 }
-.start-btn:active { transform: scale(0.98); }
+.start-btn:active { transform: scale(0.97); }
 
 .progress-bar-container {
   background: var(--border);
@@ -152,12 +186,33 @@ body {
   transition: width 0.5s ease;
 }
 
+/* Mode card buttons */
+.mode-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.mode-card {
+  flex: 1;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 16px 10px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.1s;
+  border: 2px solid transparent;
+}
+.mode-card:active { transform: scale(0.97); }
+.mode-card .mode-icon { font-size: 28px; margin-bottom: 4px; }
+.mode-card .mode-name { font-size: 13px; font-weight: 600; }
+
 /* Sentence Management */
 .search-box {
   width: 100%;
   padding: 12px 16px;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 15px;
   margin-bottom: 12px;
   outline: none;
@@ -174,9 +229,10 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 .filter-chip {
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: 20px;
   font-size: 13px;
+  font-weight: 600;
   border: 1px solid var(--border);
   background: white;
   white-space: nowrap;
@@ -191,7 +247,7 @@ body {
 
 .sentence-item {
   background: var(--card);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 14px;
   margin-bottom: 8px;
   box-shadow: var(--shadow);
@@ -205,6 +261,7 @@ body {
   display: flex;
   gap: 6px;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 .sentence-tag {
   font-size: 11px;
@@ -219,85 +276,91 @@ body {
   border-radius: 10px;
 }
 .level-new { background: #DBEAFE; color: #1D4ED8; }
-.level-learning { background: #FEF3C7; color: #92400E; }
-.level-mastered { background: #D1FAE5; color: #065F46; }
+.level-learning { background: var(--warning-light); color: #92400E; }
+.level-mastered { background: var(--success-light); color: #065F46; }
 
 /* Study Mode */
 .study-container { text-align: center; }
-.study-progress {
+.study-top-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 12px;
 }
-.study-progress-text { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
+.study-back-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+}
 .study-progress-bar {
   flex: 1;
-  height: 6px;
+  height: 5px;
   background: var(--border);
   border-radius: 3px;
   overflow: hidden;
+  margin: 0 12px;
 }
 .study-progress-fill {
   height: 100%;
-  background: var(--primary);
+  background: linear-gradient(90deg, var(--primary), var(--success));
   border-radius: 3px;
   transition: width 0.3s;
 }
+.study-counter { font-size: 13px; color: var(--text-secondary); font-weight: 600; white-space: nowrap; }
 
 .study-step-label {
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 16px;
+  padding: 5px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
 }
-.step-listen { background: #DBEAFE; color: #1D4ED8; }
-.step-repeat { background: #FEF3C7; color: #92400E; }
-.step-speak { background: #FCE7F3; color: #9D174D; }
-.step-evaluate { background: #D1FAE5; color: #065F46; }
+.step-listen { background: #EDE9FE; color: #6D28D9; }
+.step-repeat { background: var(--warning-light); color: #92400E; }
+.step-speak { background: #FFF1F2; color: #BE123C; }
 
 .study-sentence-card {
   background: var(--card);
-  border-radius: 16px;
-  padding: 30px 20px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
-  min-height: 160px;
+  border-radius: 20px;
+  padding: 32px 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-lg);
+  min-height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 .study-english {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
   line-height: 1.4;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  color: var(--text);
 }
 .study-korean {
-  font-size: 16px;
+  font-size: 17px;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.5;
 }
-.study-hidden { filter: blur(8px); cursor: pointer; }
+.study-hidden { filter: blur(10px); cursor: pointer; transition: filter 0.3s; }
+.study-hidden:active { filter: blur(4px); }
 
-.repeat-indicator {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-}
 .repeat-dots {
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 .repeat-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: var(--border);
+  transition: background 0.3s;
 }
 .repeat-dot.done { background: var(--success); }
 .repeat-dot.current { background: var(--primary); animation: pulse 1s infinite; }
@@ -310,18 +373,8 @@ body {
   font-size: 12px;
   color: var(--primary);
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
-
-.match-result {
-  font-size: 14px;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 12px;
-}
-.match-high { background: #D1FAE5; color: #065F46; }
-.match-medium { background: #FEF3C7; color: #92400E; }
-.match-low { background: #FEE2E2; color: #991B1B; }
 
 .study-actions {
   display: flex;
@@ -330,36 +383,47 @@ body {
   flex-wrap: wrap;
 }
 .action-btn {
-  padding: 12px 24px;
-  border-radius: 12px;
+  padding: 14px 24px;
+  border-radius: 14px;
   border: none;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 .action-btn:active { transform: scale(0.95); }
 .btn-primary {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
+  box-shadow: 0 4px 14px rgba(99,102,241,0.3);
 }
 .btn-secondary {
   background: var(--border);
   color: var(--text);
 }
+.btn-ghost {
+  background: none;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 16px;
+}
+
+/* Mic button */
 .btn-mic {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: var(--danger);
+  background: linear-gradient(135deg, var(--mic), #7C3AED);
   color: white;
   font-size: 28px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(239,68,68,0.4);
+  box-shadow: 0 4px 20px rgba(139,92,246,0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -367,113 +431,136 @@ body {
 }
 .btn-mic.recording {
   animation: mic-pulse 1s infinite;
-  background: #DC2626;
+  background: linear-gradient(135deg, #7C3AED, #6D28D9);
 }
 @keyframes mic-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
-  50% { box-shadow: 0 0 0 16px rgba(239,68,68,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139,92,246,0.5); }
+  50% { box-shadow: 0 0 0 18px rgba(139,92,246,0); }
 }
 
-/* Mic listening animation */
-.mic-listening-wrap {
+/* Big main action button for study */
+.main-action-btn {
+  width: 100%;
+  padding: 18px;
+  border-radius: 16px;
+  border: none;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin: 16px 0;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.1s;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+  margin-bottom: 10px;
 }
-.mic-wave {
+.main-action-btn:active { transform: scale(0.97); }
+.main-action-btn.mic-action {
+  background: linear-gradient(135deg, var(--mic), #7C3AED);
+  box-shadow: 0 4px 14px rgba(139,92,246,0.3);
+}
+
+/* Mic inline wave (small) */
+.mic-inline {
   display: flex;
   align-items: center;
-  gap: 4px;
-  height: 40px;
+  justify-content: center;
+  gap: 3px;
+  height: 24px;
+  margin: 8px 0;
 }
-.mic-wave-bar {
-  width: 4px;
+.mic-inline-bar {
+  width: 3px;
   border-radius: 2px;
-  background: var(--danger);
+  background: var(--mic);
   animation: wave-bar 0.8s ease-in-out infinite;
 }
-.mic-wave-bar:nth-child(1) { height: 12px; animation-delay: 0s; }
-.mic-wave-bar:nth-child(2) { height: 20px; animation-delay: 0.1s; }
-.mic-wave-bar:nth-child(3) { height: 32px; animation-delay: 0.2s; }
-.mic-wave-bar:nth-child(4) { height: 24px; animation-delay: 0.3s; }
-.mic-wave-bar:nth-child(5) { height: 16px; animation-delay: 0.4s; }
-.mic-wave-bar:nth-child(6) { height: 28px; animation-delay: 0.15s; }
-.mic-wave-bar:nth-child(7) { height: 10px; animation-delay: 0.35s; }
+.mic-inline-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+.mic-inline-bar:nth-child(2) { height: 14px; animation-delay: 0.1s; }
+.mic-inline-bar:nth-child(3) { height: 20px; animation-delay: 0.2s; }
+.mic-inline-bar:nth-child(4) { height: 16px; animation-delay: 0.3s; }
+.mic-inline-bar:nth-child(5) { height: 10px; animation-delay: 0.15s; }
 @keyframes wave-bar {
   0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
   50% { transform: scaleY(1.0); opacity: 1; }
 }
-.mic-listening-label {
-  font-size: 13px;
-  color: var(--danger);
-  font-weight: 600;
-}
 
-/* Real-time speech display */
-.speech-realtime {
-  background: #FEF3C7;
-  border: 2px dashed #F59E0B;
-  border-radius: 12px;
+/* Fixed speech area */
+.speech-area {
+  background: var(--mic-light);
+  border: 2px solid #C4B5FD;
+  border-radius: 14px;
   padding: 14px;
   margin: 12px 0;
-  min-height: 48px;
+  min-height: 52px;
   font-size: 16px;
   color: var(--text);
   text-align: center;
   line-height: 1.5;
+  transition: border-color 0.2s;
 }
-.speech-realtime.interim { color: var(--text-secondary); font-style: italic; }
+.speech-area.recording { border-color: var(--mic); }
+.speech-area .placeholder { color: #A78BFA; font-style: italic; }
 
 /* Word diff highlight */
-.word-correct { color: var(--success); font-weight: 600; }
-.word-wrong { color: var(--danger); font-weight: 600; text-decoration: line-through; }
+.word-correct { color: var(--success); font-weight: 700; }
+.word-wrong { color: var(--danger); font-weight: 700; text-decoration: line-through; }
 .word-missing { color: var(--text-secondary); text-decoration: underline; opacity: 0.5; }
 
 /* Score badge */
 .score-badge {
   display: inline-block;
-  padding: 6px 16px;
+  padding: 8px 20px;
   border-radius: 20px;
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   margin: 8px 0;
 }
-.score-high { background: #D1FAE5; color: #065F46; }
-.score-medium { background: #FEF3C7; color: #92400E; }
-.score-low { background: #FEE2E2; color: #991B1B; }
+.score-high { background: var(--success-light); color: #065F46; }
+.score-medium { background: var(--warning-light); color: #92400E; }
+.score-low { background: var(--danger-light); color: #9A3412; }
 
-.eval-buttons {
+/* Result card */
+.result-card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 16px;
+  margin: 12px 0;
+  box-shadow: var(--shadow);
+}
+.result-card .wrong-word-hint {
   display: flex;
-  gap: 12px;
-  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--danger-light);
+  border-radius: 10px;
+  font-size: 14px;
 }
-.eval-btn {
-  flex: 1;
-  max-width: 100px;
-  padding: 16px 10px;
-  border-radius: 12px;
-  border: 2px solid var(--border);
-  background: white;
+.wrong-word-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--danger);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  text-align: center;
-  transition: all 0.2s;
 }
-.eval-btn:active { transform: scale(0.95); }
-.eval-btn .eval-emoji { font-size: 32px; }
-.eval-btn .eval-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
-.eval-btn.selected { border-color: var(--primary); background: #EEF2FF; }
 
 /* Favorite star */
 .fav-star {
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
   color: var(--border);
-  transition: color 0.2s;
+  transition: all 0.2s;
   padding: 4px;
 }
-.fav-star.active { color: #F59E0B; }
+.fav-star.active { color: #F59E0B; transform: scale(1.1); }
 .sentence-item-row {
   display: flex;
   align-items: flex-start;
@@ -494,15 +581,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 5px;
+  margin-bottom: 10px;
 }
 .speed-btn {
   padding: 4px 10px;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid var(--border);
   background: white;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -512,36 +599,45 @@ body {
   border-color: var(--primary);
 }
 
-/* Flashcard */
+/* Flashcard with swipe */
+.flashcard-wrap {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
 .flashcard {
   background: var(--card);
-  border-radius: 16px;
-  padding: 40px 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  min-height: 200px;
+  border-radius: 20px;
+  padding: 40px 24px;
+  box-shadow: var(--shadow-lg);
+  min-height: 220px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
   position: relative;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  touch-action: pan-y;
 }
+.flashcard.swiping-left { transform: translateX(-100px) rotate(-5deg); opacity: 0.5; }
+.flashcard.swiping-right { transform: translateX(100px) rotate(5deg); opacity: 0.5; }
 .flashcard-korean {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
   line-height: 1.5;
   color: var(--text);
   margin-bottom: 16px;
 }
 .flashcard-english {
-  font-size: 18px;
+  font-size: 20px;
   color: var(--primary);
+  font-weight: 600;
   line-height: 1.4;
 }
 .flashcard-result {
   margin-top: 16px;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 15px;
   line-height: 1.8;
 }
@@ -549,16 +645,19 @@ body {
 /* Stats */
 .streak-display {
   text-align: center;
-  padding: 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, #EDE9FE, #FFF1F2);
+  border-radius: 16px;
+  margin-bottom: 12px;
 }
-.streak-number { font-size: 48px; font-weight: 800; color: var(--primary); }
+.streak-number { font-size: 52px; font-weight: 800; color: var(--primary); }
 .streak-label { font-size: 14px; color: var(--text-secondary); }
 
 .week-chart {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  height: 120px;
+  height: 100px;
   padding: 10px 0;
 }
 .week-bar-wrap {
@@ -569,7 +668,7 @@ body {
 }
 .week-bar {
   width: 28px;
-  background: #EEF2FF;
+  background: #EDE9FE;
   border-radius: 6px 6px 0 0;
   min-height: 4px;
   transition: height 0.5s;
@@ -578,11 +677,11 @@ body {
 .week-day { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
 .week-count { font-size: 10px; color: var(--text-secondary); margin-bottom: 2px; }
 
-/* Settings Modal */
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.4);
   z-index: 200;
   display: flex;
   align-items: flex-end;
@@ -590,18 +689,14 @@ body {
 }
 .modal {
   background: white;
-  border-radius: 16px 16px 0 0;
+  border-radius: 20px 20px 0 0;
   padding: 20px;
   width: 100%;
   max-width: 480px;
   max-height: 80vh;
   overflow-y: auto;
 }
-.modal-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
 .modal-close {
   float: right;
   background: none;
@@ -614,27 +709,23 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 14px 0;
   border-bottom: 1px solid var(--border);
 }
-.setting-label { font-size: 14px; }
-.setting-value {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.setting-label { font-size: 14px; font-weight: 500; }
+.setting-value { display: flex; align-items: center; gap: 8px; }
 .setting-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: white;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
 }
-.setting-num { font-size: 16px; font-weight: 600; min-width: 24px; text-align: center; }
+.setting-num { font-size: 16px; font-weight: 700; min-width: 24px; text-align: center; }
 
-/* Day selector for study */
+/* Day selector */
 .day-selector {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -645,69 +736,18 @@ body {
 }
 .day-btn {
   padding: 10px 4px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: white;
   font-size: 13px;
   cursor: pointer;
   text-align: center;
+  transition: all 0.15s;
 }
-.day-btn.has-review { border-color: var(--warning); background: #FFFBEB; }
-.day-btn.completed { border-color: var(--success); background: #ECFDF5; }
-.day-btn.active { border-color: var(--primary); background: #EEF2FF; font-weight: 700; }
-
-/* Add sentence form */
-.form-group { margin-bottom: 14px; }
-.form-label { font-size: 13px; font-weight: 600; margin-bottom: 4px; display: block; color: var(--text-secondary); }
-.form-input, .form-textarea {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 15px;
-  outline: none;
-}
-.form-input:focus, .form-textarea:focus { border-color: var(--primary); }
-.form-textarea { resize: vertical; min-height: 60px; }
-
-.fab {
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: white;
-  border: none;
-  font-size: 28px;
-  box-shadow: 0 4px 14px rgba(79,70,229,0.4);
-  cursor: pointer;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.day-btn.completed { border-color: var(--success); background: var(--success-light); }
+.day-btn:active { transform: scale(0.95); }
 
 .hidden { display: none !important; }
-
-/* Day list in sentence view */
-.day-list-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 14px;
-  background: var(--card);
-  border-radius: 10px;
-  margin-bottom: 6px;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-}
-.day-list-item:active { background: #F1F5F9; }
-.day-info { flex: 1; }
-.day-title { font-size: 15px; font-weight: 600; }
-.day-count { font-size: 12px; color: var(--text-secondary); }
-.day-arrow { color: var(--text-secondary); font-size: 18px; }
 
 /* Toast */
 .toast {
@@ -715,17 +755,48 @@ body {
   bottom: 100px;
   left: 50%;
   transform: translateX(-50%);
-  background: #1E293B;
+  background: var(--text);
   color: white;
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 12px 24px;
+  border-radius: 14px;
   font-size: 14px;
+  font-weight: 600;
   z-index: 300;
   animation: toast-in 0.3s ease;
+  max-width: 340px;
+  text-align: center;
+}
+.toast.motivate {
+  background: linear-gradient(135deg, var(--primary), var(--mic));
+  box-shadow: 0 4px 20px rgba(99,102,241,0.3);
 }
 @keyframes toast-in {
   from { opacity: 0; transform: translateX(-50%) translateY(20px); }
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Confetti check animation */
+@keyframes check-pop {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.check-pop { animation: check-pop 0.4s ease; display: inline-block; }
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
 }
 </style>
 </head>
@@ -734,33 +805,25 @@ body {
 <!-- Header -->
 <div class="header">
   <h1 id="headerTitle">SpeakUp</h1>
-  <button class="header-btn" id="settingsBtn" onclick="showSettings()">&#9881;</button>
+  <button class="header-btn" id="settingsBtn" onclick="switchTab('profile')">&#9881;</button>
 </div>
 
 <!-- Main Content Area -->
 <div class="main" id="mainContent"></div>
 
-<!-- Tab Bar -->
+<!-- Tab Bar (3 tabs) -->
 <nav class="tab-bar">
-  <button class="tab-item active" data-tab="home" onclick="switchTab('home')">
-    <span class="tab-icon">&#127968;</span>
-    <span>&#54856;</span>
+  <button class="tab-item active" data-tab="practice" onclick="switchTab('practice')">
+    <span class="tab-icon">&#127919;</span>
+    <span>연습</span>
   </button>
   <button class="tab-item" data-tab="sentences" onclick="switchTab('sentences')">
-    <span class="tab-icon">&#128214;</span>
-    <span>&#47928;&#51109;</span>
+    <span class="tab-icon">&#128213;</span>
+    <span>내 문장</span>
   </button>
-  <button class="tab-item" data-tab="study" onclick="switchTab('study')">
-    <span class="tab-icon">&#127947;</span>
-    <span>&#54617;&#49845;</span>
-  </button>
-  <button class="tab-item" data-tab="favorites" onclick="switchTab('favorites')">
-    <span class="tab-icon">&#11088;</span>
-    <span>&#51600;&#44200;&#52286;&#44592;</span>
-  </button>
-  <button class="tab-item" data-tab="stats" onclick="switchTab('stats')">
-    <span class="tab-icon">&#128200;</span>
-    <span>&#53685;&#44228;</span>
+  <button class="tab-item" data-tab="profile" onclick="switchTab('profile')">
+    <span class="tab-icon">&#128100;</span>
+    <span>나</span>
   </button>
 </nav>
 
@@ -1021,8 +1084,26 @@ function showToast(msg) {
   setTimeout(() => t.remove(), 2500);
 }
 
+// ===== MOTIVATIONAL MESSAGES =====
+const CHEER_MESSAGES = [
+  '오늘도 화이팅! 🔥', '한 문장씩, 꾸준히! 💪', '영어 실력이 쑥쑥! 🌱',
+  '포기하지 마세요! ✨', '입에 달라붙을 때까지! 🎯', '매일 조금씩 성장 중! 🚀',
+  '오늘의 연습이 내일의 실력! 📈', '잘하고 있어요! 👏'
+];
+function getCheerMessage() { return CHEER_MESSAGES[Math.floor(Math.random() * CHEER_MESSAGES.length)]; }
+
+function showMotivateToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast motivate';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+let streakCount = 0; // 연속 정답 카운트
+
 // ===== TAB NAVIGATION =====
-let currentTab = 'home';
+let currentTab = 'practice';
 
 function switchTab(tab) {
   currentTab = tab;
@@ -1038,79 +1119,81 @@ function renderTab() {
   settingsBtn.classList.remove('hidden');
 
   switch(currentTab) {
-    case 'home': renderHome(mc); break;
-    case 'sentences': renderSentences(mc); break;
-    case 'study': renderStudyHome(mc); break;
-    case 'favorites': renderFavorites(mc); break;
-    case 'stats': renderStats(mc); break;
+    case 'practice': renderPractice(mc); break;
+    case 'sentences': renderMySentences(mc); break;
+    case 'profile': renderProfile(mc); break;
   }
 }
 
-// ===== HOME TAB =====
-function renderHome(el) {
+// ===== PRACTICE TAB (Home + Study combined) =====
+function renderPractice(el) {
   document.getElementById('headerTitle').textContent = 'SpeakUp';
   const todayReview = getTodayReviewSentences();
   const todayLog = state.studyLogs.find(l => l.date === getToday());
   const studied = todayLog ? todayLog.studied : 0;
   const streak = calcStreak();
-
-  // 현재 연습중인 Day 계산
   const dayProgress = getCurrentDayProgress();
+  const weakSentences = getWeakSentences();
+  const reviewCount = todayReview.length;
 
   el.innerHTML = `
-    <div class="stat-grid">
-      <div class="stat-box">
-        <div class="stat-number">${todayReview.length}</div>
-        <div class="stat-label">오늘 복습</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-number">${studied}</div>
-        <div class="stat-label">오늘 완료</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-number">${streak}</div>
-        <div class="stat-label">연속일</div>
+    <div style="text-align:center;margin-bottom:4px">
+      <div style="font-size:14px;color:var(--text-secondary);margin-bottom:2px">
+        ${dayProgress ? `Day ${dayProgress.currentDay} · ` : ''}🔥 ${streak}일 연속 · 오늘 ${studied}문장 완료
       </div>
     </div>
 
-    <button class="start-btn" onclick="startTodayStudy()">
-      오늘의 연습 시작 (${todayReview.length}문장)
+    <button class="hero-start" onclick="startTodayStudy()">
+      <span class="hero-count">${reviewCount}</span>
+      <span class="hero-label">오늘의 연습</span>
     </button>
 
     ${dayProgress ? `
-    <div class="card">
-      <div class="card-title">현재 진행 중</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:18px;font-weight:700;color:var(--primary)">Day ${dayProgress.currentDay}</span>
-        <span style="font-size:13px;color:var(--text-secondary)">${dayProgress.completedDays}/100일 완료</span>
+    <div class="card" style="padding:12px 16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span style="font-size:15px;font-weight:700;color:var(--primary)">Day ${dayProgress.currentDay} 진행중</span>
+        <span style="font-size:12px;color:var(--text-secondary)">${dayProgress.completedDays}/100일</span>
       </div>
-      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:6px">
-        Day ${dayProgress.currentDay} 진도: ${dayProgress.masteredInDay}/${dayProgress.totalInDay}문장 마스터
-      </div>
-      <div class="progress-bar-container">
+      <div class="progress-bar-container" style="margin:4px 0">
         <div class="progress-bar-fill" style="width:${dayProgress.totalInDay ? Math.round(dayProgress.masteredInDay/dayProgress.totalInDay*100) : 0}%"></div>
       </div>
-      <button class="action-btn btn-primary" onclick="startDayStudy(${dayProgress.currentDay})" style="width:100%;justify-content:center;margin-top:10px">
-        Day ${dayProgress.currentDay} 연습하기
-      </button>
     </div>
     ` : ''}
 
-    <div class="card">
-      <div class="card-title">전체 진도</div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
-        <span>등록 ${state.sentences.length}문장</span>
-        <span>마스터 ${state.sentences.filter(s=>s.interval>=16).length}문장</span>
+    <div class="divider">또는</div>
+
+    <div class="mode-row">
+      <div class="mode-card" onclick="startFlashcard(20)">
+        <div class="mode-icon">🃏</div>
+        <div class="mode-name">플래시카드</div>
       </div>
-      <div class="progress-bar-container">
-        <div class="progress-bar-fill" style="width:${state.sentences.length ? Math.round(state.sentences.filter(s=>s.interval>=16).length/state.sentences.length*100) : 0}%"></div>
+      <div class="mode-card" onclick="startRandomStudy(20)">
+        <div class="mode-icon">🎲</div>
+        <div class="mode-name">랜덤 연습</div>
       </div>
-      <div style="font-size:12px;color:var(--text-secondary);margin-top:6px">총 누적 연습: ${state.totalPracticeCount || 0}회</div>
+      <div class="mode-card" onclick="startWeakStudy()" ${weakSentences.length === 0 ? 'style="opacity:0.4"' : ''}>
+        <div class="mode-icon">💪</div>
+        <div class="mode-name">약한 문장</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:12px 16px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-secondary)">
+        <span>등록 ${state.sentences.length} · 마스터 ${state.sentences.filter(s=>s.interval>=16).length}</span>
+        <span>누적 ${state.totalPracticeCount || 0}회</span>
+      </div>
     </div>
 
     <div class="card">
-      <div class="card-title">최근 7일 학습</div>
-      ${renderWeekChart()}
+      <div class="card-title">Day별 학습</div>
+      <div class="day-selector">
+        ${Array.from({length:100}, (_, i) => {
+          const dayNum = i + 1;
+          const daySentences = state.sentences.filter(s => s.day === dayNum);
+          const hasData = daySentences.length > 0;
+          return `<button class="day-btn ${hasData ? 'completed' : ''}" onclick="startDayStudy(${dayNum})" ${!hasData ? 'disabled style="opacity:0.3"' : ''}>D${dayNum}</button>`;
+        }).join('')}
+      </div>
     </div>
   `;
 }
@@ -1189,13 +1272,17 @@ function renderWeekChart() {
   return `<div class="week-chart">${bars}</div>`;
 }
 
-// ===== SENTENCES TAB =====
+// ===== MY SENTENCES TAB (Sentences + Favorites combined) =====
 let sentenceSearch = '';
+let sentenceViewMode = 'all'; // 'all' or 'favorites'
 
-function renderSentences(el) {
-  document.getElementById('headerTitle').textContent = '문장 관리';
+function renderMySentences(el) {
+  document.getElementById('headerTitle').textContent = '내 문장';
 
-  let filtered = [...state.sentences];
+  let filtered = sentenceViewMode === 'favorites'
+    ? state.sentences.filter(s => state.favorites.includes(s.id))
+    : [...state.sentences];
+
   if (sentenceSearch) {
     const q = sentenceSearch.toLowerCase();
     filtered = filtered.filter(s =>
@@ -1203,34 +1290,44 @@ function renderSentences(el) {
     );
   }
 
+  const favCount = state.sentences.filter(s => state.favorites.includes(s.id)).length;
+
   el.innerHTML = `
-    <input class="search-box" placeholder="문장 검색..." value="${sentenceSearch}" oninput="sentenceSearch=this.value;renderSentences(document.getElementById('mainContent'))">
-    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px">${filtered.length}개 문장</div>
+    <input class="search-box" placeholder="문장 검색..." value="${sentenceSearch}" oninput="sentenceSearch=this.value;renderMySentences(document.getElementById('mainContent'))">
+    <div class="filter-row">
+      <button class="filter-chip ${sentenceViewMode==='all'?'active':''}" onclick="sentenceViewMode='all';renderMySentences(document.getElementById('mainContent'))">전체 ${state.sentences.length}</button>
+      <button class="filter-chip ${sentenceViewMode==='favorites'?'active':''}" onclick="sentenceViewMode='favorites';renderMySentences(document.getElementById('mainContent'))">⭐ 즐겨찾기 ${favCount}</button>
+    </div>
+    ${sentenceViewMode === 'favorites' && favCount > 0 ? `
+      <button class="start-btn" onclick="startFavoriteStudy()">즐겨찾기 연습 (${favCount}문장)</button>
+    ` : ''}
     ${filtered.slice(0, 50).map(s => {
       const isFav = state.favorites.includes(s.id);
       return `
       <div class="sentence-item">
         <div class="sentence-item-row">
-          <span class="fav-star ${isFav?'active':''}" onclick="event.stopPropagation();toggleFavorite('${s.id}')">${isFav?'&#9733;':'&#9734;'}</span>
+          <span class="fav-star ${isFav?'active':''}" onclick="event.stopPropagation();toggleFavorite('${s.id}')">${isFav?'★':'☆'}</span>
           <div class="sentence-item-content" onclick="showSentenceDetail('${s.id}')">
             <div class="sentence-english">${escHtml(s.english)}</div>
             <div class="sentence-korean">${escHtml(s.korean)}</div>
             <div class="sentence-meta">
-              ${s.source ? `<span class="sentence-tag">${escHtml(s.source)}</span>` : ''}
+              ${s.memo ? `<span class="sentence-tag">${escHtml(s.memo)}</span>` : ''}
               <span class="sentence-level ${s.interval >= 16 ? 'level-mastered' : s.interval >= 2 ? 'level-learning' : 'level-new'}">
                 ${s.interval >= 16 ? '마스터' : s.interval >= 2 ? '학습중' : '새문장'}
               </span>
-              ${s.practiceCount ? `<span class="practice-count-badge">${s.practiceCount}회 연습</span>` : ''}
+              ${s.practiceCount ? `<span class="practice-count-badge">${s.practiceCount}회</span>` : ''}
             </div>
           </div>
         </div>
       </div>`;
     }).join('')}
     ${filtered.length > 50 ? `<p style="text-align:center;color:var(--text-secondary);font-size:13px">+ ${filtered.length - 50}개 더...</p>` : ''}
+    ${filtered.length === 0 ? `<div style="text-align:center;padding:40px;color:var(--text-secondary)">
+      ${sentenceViewMode === 'favorites' ? '☆을 눌러 문장을 저장해보세요' : '문장이 없습니다. 설정에서 강좌를 불러오세요'}
+    </div>` : ''}
   `;
 }
 
-// ===== FAVORITES =====
 function toggleFavorite(id) {
   const idx = state.favorites.indexOf(id);
   if (idx >= 0) {
@@ -1240,42 +1337,6 @@ function toggleFavorite(id) {
   }
   saveState();
   renderTab();
-}
-
-function renderFavorites(el) {
-  document.getElementById('headerTitle').textContent = '즐겨찾기';
-  const favSentences = state.sentences.filter(s => state.favorites.includes(s.id));
-
-  el.innerHTML = `
-    <div style="text-align:center;margin-bottom:16px">
-      <div style="font-size:48px;margin-bottom:8px">&#11088;</div>
-      <div style="font-size:14px;color:var(--text-secondary)">${favSentences.length}개 저장됨</div>
-    </div>
-    ${favSentences.length === 0 ? `
-      <div class="card" style="text-align:center;padding:30px">
-        <p style="color:var(--text-secondary)">문장 목록에서 &#9734; 을 눌러<br>나만의 문장을 저장해보세요</p>
-      </div>
-    ` : `
-      <button class="start-btn" onclick="startFavoriteStudy()">
-        즐겨찾기 연습 시작 (${favSentences.length}문장)
-      </button>
-      ${favSentences.map(s => `
-        <div class="sentence-item">
-          <div class="sentence-item-row">
-            <span class="fav-star active" onclick="event.stopPropagation();toggleFavorite('${s.id}')">&#9733;</span>
-            <div class="sentence-item-content" onclick="showSentenceDetail('${s.id}')">
-              <div class="sentence-english">${escHtml(s.english)}</div>
-              <div class="sentence-korean">${escHtml(s.korean)}</div>
-              <div class="sentence-meta">
-                ${s.memo ? `<span class="sentence-tag">${escHtml(s.memo)}</span>` : ''}
-                ${s.practiceCount ? `<span class="practice-count-badge">${s.practiceCount}회 연습</span>` : ''}
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join('')}
-    `}
-  `;
 }
 
 function startFavoriteStudy() {
@@ -1289,6 +1350,7 @@ function startFavoriteStudy() {
     results: [],
     mode: 'favorites',
   };
+  showMotivateToast(getCheerMessage());
   renderStudySession();
 }
 
@@ -1297,71 +1359,7 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ===== STUDY HOME =====
-function renderStudyHome(el) {
-  document.getElementById('headerTitle').textContent = '학습 모드';
-  const todayReview = getTodayReviewSentences();
-  const weakSentences = getWeakSentences();
-
-  el.innerHTML = `
-    <div class="card" style="text-align:center">
-      <div style="font-size:48px;margin-bottom:8px">📖</div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:4px">오늘의 복습</div>
-      <div style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">${todayReview.length}개 문장이 복습 대기 중</div>
-      <button class="action-btn btn-primary" onclick="startTodayStudy()" style="width:100%;justify-content:center" ${todayReview.length === 0 ? 'disabled' : ''}>
-        복습 시작
-      </button>
-    </div>
-
-    <div class="card" style="text-align:center">
-      <div style="font-size:48px;margin-bottom:8px">🎲</div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:4px">랜덤 연습</div>
-      <div style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">무작위로 문장을 뽑아 연습합니다</div>
-      <div style="display:flex;gap:8px">
-        <button class="action-btn btn-primary" onclick="startRandomStudy(10)" style="flex:1;justify-content:center">10문장</button>
-        <button class="action-btn btn-primary" onclick="startRandomStudy(20)" style="flex:1;justify-content:center">20문장</button>
-        <button class="action-btn btn-secondary" onclick="startRandomStudy(50)" style="flex:1;justify-content:center">50문장</button>
-      </div>
-    </div>
-
-    <div class="card" style="text-align:center">
-      <div style="font-size:48px;margin-bottom:8px">💪</div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:4px">약한 문장 연습</div>
-      <div style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">잘 대답 못한 문장 ${weakSentences.length}개</div>
-      <button class="action-btn btn-primary" onclick="startWeakStudy()" style="width:100%;justify-content:center" ${weakSentences.length === 0 ? 'disabled' : ''}>
-        약한 문장 연습하기
-      </button>
-    </div>
-
-    <div class="card" style="text-align:center">
-      <div style="font-size:48px;margin-bottom:8px">🃏</div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:4px">플래시카드 연습</div>
-      <div style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">한글을 보고 영어로 말해보세요</div>
-      <div style="display:flex;gap:8px">
-        <button class="action-btn btn-primary" onclick="startFlashcard(10)" style="flex:1;justify-content:center">10장</button>
-        <button class="action-btn btn-primary" onclick="startFlashcard(20)" style="flex:1;justify-content:center">20장</button>
-        <button class="action-btn btn-secondary" onclick="startFlashcard(50)" style="flex:1;justify-content:center">50장</button>
-      </div>
-    </div>
-
-    <div class="card" style="text-align:center;padding:12px 16px">
-      <div style="font-size:13px;color:var(--text-secondary)">총 누적 연습: <strong style="color:var(--primary)">${state.totalPracticeCount || 0}</strong>회</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Day별 학습</div>
-      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">원하는 Day를 선택해서 학습할 수 있습니다</p>
-      <div class="day-selector">
-        ${Array.from({length:100}, (_, i) => {
-          const dayNum = i + 1;
-          const daySentences = state.sentences.filter(s => s.day === dayNum);
-          const hasData = daySentences.length > 0;
-          return `<button class="day-btn ${hasData ? 'completed' : ''}" onclick="startDayStudy(${dayNum})" ${!hasData ? 'disabled style="opacity:0.4"' : ''}>Day ${dayNum}</button>`;
-        }).join('')}
-      </div>
-    </div>
-  `;
-}
+// (renderStudyHome removed - merged into renderPractice)
 
 // Get sentences user struggled with (low match rate or rating=1)
 function getWeakSentences() {
@@ -1373,36 +1371,28 @@ function getWeakSentences() {
 
 function startRandomStudy(count) {
   if (state.sentences.length === 0) {
-    showToast('문장이 없습니다. 먼저 강좌를 불러오세요');
+    showToast('문장이 없습니다. 설정에서 강좌를 불러오세요');
     return;
   }
   const shuffled = [...state.sentences].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, Math.min(count, shuffled.length));
   studySession = {
-    sentences: selected,
-    currentIndex: 0,
-    step: 1, // 듣기부터 시작
-    repeatCount: 0,
-    results: [],
-    mode: 'random',
+    sentences: selected, currentIndex: 0, step: 1, repeatCount: 0, results: [], mode: 'random',
   };
+  streakCount = 0;
+  showMotivateToast(getCheerMessage());
   renderStudySession();
 }
 
 function startWeakStudy() {
   const weak = getWeakSentences();
-  if (weak.length === 0) {
-    showToast('약한 문장이 없습니다');
-    return;
-  }
+  if (weak.length === 0) { showToast('약한 문장이 없습니다'); return; }
   studySession = {
     sentences: [...weak].sort(() => Math.random() - 0.5),
-    currentIndex: 0,
-    step: 1, // 듣기부터 시작
-    repeatCount: 0,
-    results: [],
-    mode: 'weak',
+    currentIndex: 0, step: 1, repeatCount: 0, results: [], mode: 'weak',
   };
+  streakCount = 0;
+  showMotivateToast(getCheerMessage());
   renderStudySession();
 }
 
@@ -1417,31 +1407,51 @@ function startTodayStudy() {
   }
   studySession = {
     sentences: sentences.slice(0, state.settings.dailyGoal),
-    currentIndex: 0,
-    step: 1, // 듣기부터 시작
-    repeatCount: 0,
-    results: [],
-    mode: 'review',
+    currentIndex: 0, step: 1, repeatCount: 0, results: [], mode: 'review',
   };
+  streakCount = 0;
+  showMotivateToast(getCheerMessage());
   renderStudySession();
 }
 
 function startDayStudy(dayNum) {
   const sentences = state.sentences.filter(s => s.day === dayNum);
-  if (sentences.length === 0) {
-    showToast('해당 Day에 문장이 없습니다');
-    return;
-  }
+  if (sentences.length === 0) { showToast('해당 Day에 문장이 없습니다'); return; }
   studySession = {
     sentences: [...sentences],
-    currentIndex: 0,
-    step: 1, // 듣기부터 시작
-    repeatCount: 0,
-    results: [],
-    mode: 'day',
-    dayNum: dayNum,
+    currentIndex: 0, step: 1, repeatCount: 0, results: [], mode: 'day', dayNum: dayNum,
   };
+  streakCount = 0;
+  showMotivateToast(getCheerMessage());
   renderStudySession();
+}
+
+// ===== STUDY SESSION: 3-Step Auto-Eval Flow =====
+// Step 1: 문장 듣기 → Step 2: 따라 말하기 → Step 3: 안 보고 말하기 (자동 평가)
+
+function getWrongWords(original, spoken) {
+  const origWords = original.toLowerCase().replace(/[^a-z'\s]/g, '').split(/\s+/).filter(Boolean);
+  const spokenWords = spoken.toLowerCase().replace(/[^a-z'\s]/g, '').split(/\s+/).filter(Boolean);
+  return origWords.filter(w => !spokenWords.includes(w));
+}
+
+function speakWrongWords(words) {
+  if (!words.length) return;
+  const text = words.join(', ');
+  speak(text, 0.8);
+}
+
+function exitStudy() {
+  window.speechSynthesis.cancel();
+  if (isRecording) stopRecognition();
+  studySession = null;
+  studySpeedOverride = null;
+  streakCount = 0;
+  interimTranscript = '';
+  document.getElementById('headerTitle').textContent = 'SpeakUp';
+  document.getElementById('settingsBtn').classList.remove('hidden');
+  document.querySelector('.tab-bar').style.display = '';
+  switchTab('practice');
 }
 
 function renderStudySession() {
@@ -1452,44 +1462,49 @@ function renderStudySession() {
   const current = studySession.currentIndex + 1;
   const step = studySession.step;
 
-  // Section info from memo (e.g., "Day 5 - Model")
   const sectionLabel = s.memo || '';
   document.getElementById('headerTitle').textContent = `학습 ${current}/${total}`;
   document.getElementById('settingsBtn').classList.add('hidden');
+  document.querySelector('.tab-bar').style.display = 'none';
 
-  const stepLabels = ['', '문장 듣기', '따라 말하기', '안 보고 말하기', '자기 평가'];
-  const stepClasses = ['', 'step-listen', 'step-repeat', 'step-speak', 'step-evaluate'];
+  const stepLabels = ['', '문장 듣기', '따라 말하기', '안 보고 말하기'];
+  const stepClasses = ['', 'step-listen', 'step-repeat', 'step-speak'];
 
+  // Speed control
+  const speedOptions = [0.5, 0.7, 1.0, 1.2, 1.5];
+  const speedControlHtml = `<div class="speed-control">
+    <span style="font-size:11px;color:var(--text-secondary)">속도:</span>
+    ${speedOptions.map(sp => `<button class="speed-btn ${studySpeedOverride === sp ? 'active' : ''}" onclick="setStudySpeed(${sp})">${sp}x</button>`).join('')}
+    <button class="speed-btn" onclick="setStudySpeed(null)" style="${studySpeedOverride === null ? 'background:var(--primary);color:white;border-color:var(--primary)' : ''}">자동</button>
+  </div>`;
+
+  const listenMax = state.settings.listenRepeat;
+  const speakMax = state.settings.speakRepeat;
+  const rep = studySession.repeatCount;
+
+  const getSpeedLabel = (r) => {
+    if (studySpeedOverride !== null) return '🎚 수동 ' + studySpeedOverride.toFixed(1) + 'x';
+    return (r % 3 === 1) ? '🐢 느린 속도 (0.7x)' : '🏃 기본 속도 (1.0x)';
+  };
+
+  // Top bar with back button and progress
   let content = `
     <div class="study-container">
-      <div class="study-progress">
-        <span class="study-progress-text">${current}/${total}</span>
-        <div class="study-progress-bar">
-          <div class="study-progress-fill" style="width:${(current/total)*100}%"></div>
+      <div class="study-top-bar">
+        <button class="btn-ghost" onclick="exitStudy()">← 나가기</button>
+        <div style="flex:1;margin:0 12px">
+          <div class="study-progress-bar" style="height:6px;border-radius:3px;background:#E5E7EB">
+            <div class="study-progress-fill" style="width:${(current/total)*100}%;height:100%;border-radius:3px;background:var(--primary);transition:width 0.3s"></div>
+          </div>
         </div>
+        <span style="font-size:13px;color:var(--text-secondary);font-weight:600">${current}/${total}</span>
       </div>
       ${sectionLabel ? `<div style="font-size:12px;color:var(--primary);font-weight:600;margin-bottom:8px;background:#EEF2FF;display:inline-block;padding:3px 10px;border-radius:8px">📚 ${escHtml(sectionLabel)}</div>` : ''}
       <div class="study-step-label ${stepClasses[step]}">${stepLabels[step]}</div>
   `;
 
-  // Speed pattern: 1st=normal(1.0), 2nd=slow(0.7), 3rd=normal(1.0), ...
-  const getSpeed = (rep) => (rep % 3 === 1) ? 0.7 : 1.0;
-  const getSpeedLabel = (rep) => {
-    if (studySpeedOverride !== null) return '🎚 수동 ' + studySpeedOverride.toFixed(1) + 'x';
-    return (rep % 3 === 1) ? '🐢 느린 속도 (0.7x)' : '🏃 기본 속도 (1.0x)';
-  };
-  const speedOptions = [0.5, 0.7, 1.0, 1.2, 1.5];
-  const speedControlHtml = `<div class="speed-control">
-    <span style="font-size:11px;color:var(--text-secondary)">속도:</span>
-    ${speedOptions.map(sp => `<button class="speed-btn ${studySpeedOverride === sp ? 'active' : (studySpeedOverride === null && sp === 1.0 ? '' : '')}" onclick="setStudySpeed(${sp})">${sp}x</button>`).join('')}
-    <button class="speed-btn" onclick="setStudySpeed(null)" style="${studySpeedOverride === null ? 'background:var(--primary);color:white;border-color:var(--primary)' : ''}">자동</button>
-  </div>`;
-  const listenMax = state.settings.listenRepeat;
-  const speakMax = state.settings.speakRepeat;
-
   if (step === 1) {
-    // ===== 문장 듣기 (반복 횟수 적용) =====
-    const rep = studySession.repeatCount;
+    // ===== Step 1: 문장 듣기 =====
     content += `
       ${speedControlHtml}
       <div class="speed-label">${getSpeedLabel(rep)}</div>
@@ -1503,15 +1518,15 @@ function renderStudySession() {
         <div class="study-english">${escHtml(s.english)}</div>
         <div class="study-korean">${escHtml(s.korean)}</div>
       </div>
-      <div class="study-actions">
-        <button class="action-btn btn-primary" onclick="playListenStep()">🔊 듣기</button>
-        <button class="action-btn btn-secondary" onclick="skipToStep(2)">따라말하기로 ▶</button>
+      <div class="speech-area" style="min-height:40px">
+        <div class="placeholder">듣기 완료 후 따라 말하기로 넘어갑니다</div>
       </div>
+      <button class="main-action-btn" onclick="playListenStep()">🔊 듣기</button>
+      <button class="btn-ghost" onclick="skipToStep(2)" style="margin-top:8px;display:block;width:100%;text-align:center">따라말하기로 건너뛰기 →</button>
     `;
 
   } else if (step === 2) {
-    // ===== 따라 말하기 (반복 횟수 적용) =====
-    const rep = studySession.repeatCount;
+    // ===== Step 2: 따라 말하기 =====
     content += `
       ${speedControlHtml}
       <div class="speed-label">${getSpeedLabel(rep)}</div>
@@ -1525,133 +1540,127 @@ function renderStudySession() {
         <div class="study-english">${escHtml(s.english)}</div>
         <div class="study-korean">${escHtml(s.korean)}</div>
       </div>
+      <div class="speech-area ${isRecording ? 'recording' : ''}">
+        ${isRecording ? `
+          <div class="mic-inline">
+            <div class="mic-inline-bar"></div><div class="mic-inline-bar"></div><div class="mic-inline-bar"></div>
+            <div class="mic-inline-bar"></div><div class="mic-inline-bar"></div>
+          </div>
+          <span style="color:var(--mic);font-size:14px">듣고 있습니다...</span>
+        ` : interimTranscript ? `
+          <span style="color:var(--text-secondary);font-style:italic">${escHtml(interimTranscript)}</span>
+        ` : `
+          <div class="placeholder">🎤 버튼을 눌러 따라 말해보세요</div>
+        `}
+      </div>
     `;
 
-    // 마이크 듣는 중 애니메이션
-    if (isRecording) {
-      content += `
-        <div class="mic-listening-wrap">
-          <div class="mic-wave">
-            <div class="mic-wave-bar"></div>
-            <div class="mic-wave-bar"></div>
-            <div class="mic-wave-bar"></div>
-            <div class="mic-wave-bar"></div>
-            <div class="mic-wave-bar"></div>
-            <div class="mic-wave-bar"></div>
-            <div class="mic-wave-bar"></div>
-          </div>
-          <div class="mic-listening-label">🎤 듣고 있습니다...</div>
-        </div>
-      `;
-    }
-
-    // 실시간 음성 텍스트 표시
-    if (interimTranscript) {
-      content += `<div class="speech-realtime interim">${escHtml(interimTranscript)}</div>`;
-    }
-
-    // 최종 결과 + 단어별 평가
+    // Result card with wrong word hint
     if (studySession.lastMatch !== undefined && studySession.lastSpoken) {
       const scoreClass = studySession.lastMatch >= 80 ? 'score-high' : studySession.lastMatch >= 50 ? 'score-medium' : 'score-low';
+      const wrongWords = getWrongWords(s.english, studySession.lastSpoken);
       content += `
-        <div class="score-badge ${scoreClass}">일치율: ${studySession.lastMatch}%</div>
-        <div style="margin:8px 0;font-size:15px;line-height:1.8">
-          ${studySession.lastDiffHtml || `"${escHtml(studySession.lastSpoken)}"`}
+        <div class="result-card">
+          <div class="score-badge ${scoreClass}">일치율: ${studySession.lastMatch}%</div>
+          <div style="margin:8px 0;font-size:15px;line-height:1.8">
+            ${studySession.lastDiffHtml || `"${escHtml(studySession.lastSpoken)}"`}
+          </div>
+          ${wrongWords.length > 0 ? `
+            <button class="wrong-word-hint" onclick="speakWrongWords(${escHtml(JSON.stringify(wrongWords))})">
+              🔊 틀린 단어 듣기: ${escHtml(wrongWords.join(', '))}
+            </button>
+          ` : ''}
         </div>
       `;
     }
 
-    // 버튼들
     if (!isRecording) {
       content += `
-        <div class="study-actions" style="margin-top:16px">
-          <button class="action-btn btn-primary" onclick="playAndRecord()">🔊 듣고 따라하기</button>
-          <button class="btn-mic" onclick="recordRepeatStep()">🎤</button>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="action-btn btn-secondary" onclick="retryCurrentSentence()" style="flex:1;justify-content:center">🔄 다시시도</button>
-          <button class="action-btn btn-secondary" onclick="goToNextSentence()" style="flex:1;justify-content:center">다음 ▶</button>
+        <button class="main-action-btn" onclick="playAndRecord()">🔊 듣고 따라하기</button>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn-ghost" onclick="recordRepeatStep()" style="flex:1">🎤 바로 말하기</button>
+          <button class="btn-ghost" onclick="skipToStep(3)" style="flex:1">안보고 말하기 →</button>
         </div>
       `;
     }
 
   } else if (step === 3) {
-    // ===== 안 보고 말하기 =====
+    // ===== Step 3: 안 보고 말하기 (자동 평가) =====
     content += `
       ${speedControlHtml}
       <div class="study-sentence-card">
         <div class="study-korean" style="font-size:20px;color:var(--text)">${escHtml(s.korean)}</div>
         <div class="study-english study-hidden" id="hiddenEnglish" onclick="this.classList.remove('study-hidden')">${escHtml(s.english)}</div>
+        <div style="font-size:11px;color:#A78BFA;margin-top:4px">영어 문장을 터치하면 볼 수 있어요</div>
       </div>
-    `;
-
-    if (isRecording) {
-      content += `
-        <div class="mic-listening-wrap">
-          <div class="mic-wave">
-            <div class="mic-wave-bar"></div><div class="mic-wave-bar"></div><div class="mic-wave-bar"></div>
-            <div class="mic-wave-bar"></div><div class="mic-wave-bar"></div><div class="mic-wave-bar"></div><div class="mic-wave-bar"></div>
+      <div class="speech-area ${isRecording ? 'recording' : ''}">
+        ${isRecording ? `
+          <div class="mic-inline">
+            <div class="mic-inline-bar"></div><div class="mic-inline-bar"></div><div class="mic-inline-bar"></div>
+            <div class="mic-inline-bar"></div><div class="mic-inline-bar"></div>
           </div>
-          <div class="mic-listening-label">🎤 듣고 있습니다...</div>
-        </div>
-      `;
-    }
-
-    if (interimTranscript) {
-      content += `<div class="speech-realtime interim">${escHtml(interimTranscript)}</div>`;
-    }
-
-    if (studySession.lastMatch !== undefined && studySession.lastSpoken) {
-      const scoreClass = studySession.lastMatch >= 80 ? 'score-high' : studySession.lastMatch >= 50 ? 'score-medium' : 'score-low';
-      content += `
-        <div class="score-badge ${scoreClass}">일치율: ${studySession.lastMatch}%</div>
-        <div style="margin:8px 0;font-size:15px;line-height:1.8">
-          ${studySession.lastDiffHtml || `"${escHtml(studySession.lastSpoken)}"`}
-        </div>
-      `;
-    }
-
-    if (!isRecording) {
-      content += `
-        <div class="study-actions">
-          <button class="btn-mic" onclick="recordSpeakStep()">🎤</button>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="action-btn btn-secondary" onclick="retryCurrentSentence()" style="flex:1;justify-content:center">🔄 다시시도</button>
-          <button class="action-btn btn-secondary" onclick="revealAndNext()" style="flex:1;justify-content:center">정답 확인 & 다음</button>
-        </div>
-      `;
-    }
-
-  } else if (step === 4) {
-    // ===== 자기 평가 =====
-    content += `
-      <div class="study-sentence-card">
-        <div class="study-english">${escHtml(s.english)}</div>
-        <div class="study-korean">${escHtml(s.korean)}</div>
-      </div>
-      <p style="text-align:center;font-size:14px;color:var(--text-secondary);margin-bottom:16px">이 문장이 얼마나 쉬웠나요?</p>
-      <div class="eval-buttons">
-        <button class="eval-btn" onclick="evaluateSentence(1)">
-          <div class="eval-emoji">😟</div>
-          <div class="eval-label">어려움</div>
-        </button>
-        <button class="eval-btn" onclick="evaluateSentence(2)">
-          <div class="eval-emoji">😐</div>
-          <div class="eval-label">보통</div>
-        </button>
-        <button class="eval-btn" onclick="evaluateSentence(3)">
-          <div class="eval-emoji">😄</div>
-          <div class="eval-label">쉬움</div>
-        </button>
+          <span style="color:var(--mic);font-size:14px">듣고 있습니다...</span>
+        ` : interimTranscript ? `
+          <span style="color:var(--text-secondary);font-style:italic">${escHtml(interimTranscript)}</span>
+        ` : `
+          <div class="placeholder">🎤 한국어를 보고 영어로 말해보세요</div>
+        `}
       </div>
     `;
+
+    // Result card with auto-evaluation
+    if (studySession.lastMatch !== undefined && studySession.lastSpoken) {
+      const score = studySession.lastMatch;
+      const scoreClass = score >= 80 ? 'score-high' : score >= 50 ? 'score-medium' : 'score-low';
+      const wrongWords = getWrongWords(s.english, studySession.lastSpoken);
+      let evalMsg = '';
+      if (score >= 90) evalMsg = '<span class="check-pop">✅</span> 완벽해요!';
+      else if (score >= 60) evalMsg = '👍 잘했어요!';
+      else evalMsg = '💪 다시 한번 도전해볼까요?';
+
+      content += `
+        <div class="result-card">
+          <div class="score-badge ${scoreClass}">일치율: ${score}%</div>
+          <div style="margin:6px 0;font-size:16px;font-weight:600;text-align:center">${evalMsg}</div>
+          <div style="margin:8px 0;font-size:15px;line-height:1.8">
+            ${studySession.lastDiffHtml || `"${escHtml(studySession.lastSpoken)}"`}
+          </div>
+          ${wrongWords.length > 0 ? `
+            <button class="wrong-word-hint" onclick="speakWrongWords(${escHtml(JSON.stringify(wrongWords))})">
+              🔊 틀린 단어 듣기: ${escHtml(wrongWords.join(', '))}
+            </button>
+          ` : ''}
+        </div>
+      `;
+
+      if (!isRecording) {
+        if (score < 60) {
+          content += `
+            <button class="main-action-btn" onclick="retryFromBeginning()" style="background:var(--danger)">🔄 처음부터 다시</button>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button class="btn-ghost" onclick="recordSpeakStep()" style="flex:1">🎤 다시 말하기</button>
+              <button class="btn-ghost" onclick="autoEvalAndNext()" style="flex:1">그래도 다음으로 →</button>
+            </div>
+          `;
+        } else {
+          content += `
+            <button class="main-action-btn" onclick="autoEvalAndNext()">다음 문장으로 →</button>
+            <button class="btn-ghost" onclick="recordSpeakStep()" style="margin-top:8px;display:block;width:100%;text-align:center">🎤 한번 더 말하기</button>
+          `;
+        }
+      }
+    } else {
+      // No result yet - show mic button
+      if (!isRecording) {
+        content += `<button class="main-action-btn mic-action" onclick="recordSpeakStep()">🎤 영어로 말하기</button>`;
+      }
+    }
   }
 
   content += '</div>';
   mc.innerHTML = content;
 
-  // Auto-play: Step 1은 자동 듣기 시작, Step 2는 자동 듣고따라하기
+  // Auto-play
   if (step === 1 && !studySession.autoPlayed) {
     studySession.autoPlayed = true;
     setTimeout(() => playListenStep(), 500);
@@ -1668,14 +1677,13 @@ function playListenStep() {
   const s = studySession.sentences[studySession.currentIndex];
   const rep = studySession.repeatCount;
   const maxRep = state.settings.listenRepeat;
-  if (rep >= maxRep) return; // 이미 완료된 경우 무시
+  if (rep >= maxRep) return;
   const speed = (rep % 3 === 1) ? 0.7 : 1.0;
 
   speak(s.english, speed, () => {
-    if (!studySession || studySession.step !== 1) return; // 이미 넘어간 경우
+    if (!studySession || studySession.step !== 1) return;
     studySession.repeatCount++;
     if (studySession.repeatCount >= maxRep) {
-      // 듣기 완료 → 따라말하기로 이동
       studySession.step = 2;
       studySession.repeatCount = 0;
       studySession.autoPlayed = false;
@@ -1690,7 +1698,7 @@ function playListenStep() {
   });
 }
 
-// ===== Step 2: 듣기 → 자동 마이크 시작 (속도 패턴 적용) =====
+// ===== Step 2: 듣기 → 자동 마이크 =====
 function playAndRecord() {
   if (!studySession) return;
   const s = studySession.sentences[studySession.currentIndex];
@@ -1699,7 +1707,6 @@ function playAndRecord() {
 
   window.speechSynthesis.cancel();
   speak(s.english, speed, () => {
-    // TTS 끝나면 자동으로 마이크 활성화
     setTimeout(() => recordRepeatStep(), 300);
   });
 }
@@ -1729,46 +1736,49 @@ function skipToStep(targetStep) {
   renderStudySession();
 }
 
+function onInterimUpdate(interim) {
+  interimTranscript = interim;
+  const el = document.querySelector('.speech-area');
+  if (el) {
+    el.innerHTML = `
+      <div class="mic-inline">
+        <div class="mic-inline-bar"></div><div class="mic-inline-bar"></div><div class="mic-inline-bar"></div>
+        <div class="mic-inline-bar"></div><div class="mic-inline-bar"></div>
+      </div>
+      <span style="color:var(--text);font-size:15px">${escHtml(interim)}</span>
+    `;
+  }
+}
+
+function handleRecResult(transcript, step) {
+  if (!studySession) return;
+  const s = studySession.sentences[studySession.currentIndex];
+  if (transcript) {
+    const match = calcMatchRate(s.english, transcript);
+    studySession.lastMatch = match;
+    studySession.lastSpoken = transcript;
+    studySession.lastDiffHtml = getWordDiffHtml(s.english, transcript);
+
+    const found = state.sentences.find(x => x.id === s.id);
+    if (found) {
+      found.lastMatchRate = match;
+      saveState();
+    }
+  }
+  interimTranscript = '';
+}
+
 function recordRepeatStep() {
-  if (isRecording) return;
+  if (isRecording || !studySession) return;
   const s = studySession.sentences[studySession.currentIndex];
 
-  const onInterim = (interim) => {
-    const el = document.querySelector('.speech-realtime');
-    if (el) {
-      el.textContent = interim;
-    } else {
-      const card = document.querySelector('.study-sentence-card');
-      if (card) {
-        let rt = document.createElement('div');
-        rt.className = 'speech-realtime interim';
-        rt.textContent = interim;
-        card.after(rt);
-      }
-    }
-  };
-
   startRecognition((transcript) => {
-    if (transcript) {
-      const match = calcMatchRate(s.english, transcript);
-      studySession.lastMatch = match;
-      studySession.lastSpoken = transcript;
-      studySession.lastDiffHtml = getWordDiffHtml(s.english, transcript);
+    handleRecResult(transcript, 2);
 
-      // 약한 문장으로 기록
-      const found = state.sentences.find(x => x.id === s.id);
-      if (found) {
-        found.lastMatchRate = match;
-        saveState();
-      }
-    }
-
-    // 반복 카운터 증가
     studySession.repeatCount++;
     const maxRep = state.settings.speakRepeat;
 
     if (studySession.repeatCount >= maxRep) {
-      // 따라말하기 완료 → 안보고말하기로 자동 이동
       setTimeout(() => {
         studySession.step = 3;
         studySession.repeatCount = 0;
@@ -1777,48 +1787,22 @@ function recordRepeatStep() {
         studySession.lastSpoken = undefined;
         studySession.lastDiffHtml = undefined;
         renderStudySession();
-      }, 2000); // 2초간 결과 보여준 후 이동
+      }, 2000);
     }
 
     renderStudySession();
-  }, onInterim);
+  }, onInterimUpdate);
 
-  renderStudySession(); // show recording state
+  renderStudySession();
 }
 
 function recordSpeakStep() {
-  if (isRecording) return;
-  const s = studySession.sentences[studySession.currentIndex];
-
-  const onInterim = (interim) => {
-    const el = document.querySelector('.speech-realtime');
-    if (el) {
-      el.textContent = interim;
-    } else {
-      const card = document.querySelector('.study-sentence-card');
-      if (card) {
-        let rt = document.createElement('div');
-        rt.className = 'speech-realtime interim';
-        rt.textContent = interim;
-        card.after(rt);
-      }
-    }
-  };
+  if (isRecording || !studySession) return;
 
   startRecognition((transcript) => {
-    if (transcript) {
-      studySession.lastMatch = calcMatchRate(s.english, transcript);
-      studySession.lastSpoken = transcript;
-      studySession.lastDiffHtml = getWordDiffHtml(s.english, transcript);
-
-      const found = state.sentences.find(x => x.id === s.id);
-      if (found) {
-        found.lastMatchRate = studySession.lastMatch;
-        saveState();
-      }
-    }
+    handleRecResult(transcript, 3);
     renderStudySession();
-  }, onInterim);
+  }, onInterimUpdate);
 
   renderStudySession();
 }
@@ -1831,49 +1815,30 @@ function retryCurrentSentence() {
   renderStudySession();
 }
 
-function goToNextSentence() {
-  // 평가 없이 다음 문장으로 (연습 카운트는 증가)
-  const s = studySession.sentences[studySession.currentIndex];
-  incrementPracticeCount(s.id);
+function retryFromBeginning() {
   window.speechSynthesis.cancel();
-  studySession.currentIndex++;
-  if (studySession.currentIndex >= studySession.sentences.length) {
-    finishStudy();
-  } else {
-    studySession.step = 1; // 듣기부터 시작
-    studySession.repeatCount = 0;
-    studySession.lastMatch = undefined;
-    studySession.lastSpoken = undefined;
-    studySession.lastDiffHtml = undefined;
-    studySession.autoPlayed = false;
-    interimTranscript = '';
-    renderStudySession();
-  }
-}
-
-function revealAndNext() {
-  document.getElementById('hiddenEnglish')?.classList.remove('study-hidden');
-  studySession.step = 4;
+  studySession.step = 1;
+  studySession.repeatCount = 0;
+  studySession.autoPlayed = false;
   studySession.lastMatch = undefined;
   studySession.lastSpoken = undefined;
   studySession.lastDiffHtml = undefined;
+  interimTranscript = '';
+  streakCount = 0;
   renderStudySession();
 }
 
-function skipToNextStep() {
-  if (studySession.step === 2) {
-    studySession.step = 3;
-    studySession.repeatCount = 0;
-  }
-  studySession.lastMatch = undefined;
-  studySession.lastSpoken = undefined;
-  studySession.lastDiffHtml = undefined;
-  renderStudySession();
-}
-
-function evaluateSentence(rating) {
+function autoEvalAndNext() {
   const s = studySession.sentences[studySession.currentIndex];
-  // Find in state and update
+  const score = studySession.lastMatch || 0;
+
+  // Auto rating: ≥90% = easy(3), 60-89% = normal(2), <60% = hard(1)
+  let rating;
+  if (score >= 90) rating = 3;
+  else if (score >= 60) rating = 2;
+  else rating = 1;
+
+  // Update spaced repetition
   const found = state.sentences.find(x => x.id === s.id);
   if (found) {
     const result = getNextReviewDate(found.interval || 1, rating);
@@ -1893,10 +1858,23 @@ function evaluateSentence(rating) {
   }
   log.studied++;
   if (rating >= 2) log.correct++;
-
   saveState();
 
-  // Next sentence or finish
+  // Streak tracking
+  if (score >= 60) {
+    streakCount++;
+    if (streakCount >= 5 && streakCount % 5 === 0) {
+      showMotivateToast(`🔥 ${streakCount}문장 연속 성공! ${getCheerMessage()}`);
+    }
+  } else {
+    streakCount = 0;
+  }
+
+  advanceToNext();
+}
+
+function advanceToNext() {
+  window.speechSynthesis.cancel();
   studySession.currentIndex++;
   if (studySession.currentIndex >= studySession.sentences.length) {
     finishStudy();
@@ -1917,19 +1895,24 @@ function finishStudy() {
   studySpeedOverride = null;
   const mc = document.getElementById('mainContent');
   const todayLog = state.studyLogs.find(l => l.date === getToday());
+  const streak = calcStreak();
   mc.innerHTML = `
     <div style="text-align:center;padding:40px 20px">
       <div style="font-size:64px;margin-bottom:16px">🎉</div>
       <h2 style="margin-bottom:8px">학습 완료!</h2>
+      ${streak >= 2 ? `<div class="streak-display">🔥 ${streak}일 연속 학습 중!</div>` : ''}
       <p style="color:var(--text-secondary);margin-bottom:24px">
         오늘 ${todayLog ? todayLog.studied : 0}개 문장을 학습했습니다<br>
         총 누적 연습: ${state.totalPracticeCount || 0}회
       </p>
-      <button class="action-btn btn-primary" onclick="switchTab('home')" style="margin:0 auto">홈으로 돌아가기</button>
+      <p style="font-size:18px;margin-bottom:24px">${getCheerMessage()}</p>
+      <button class="main-action-btn" onclick="switchTab('practice')">홈으로 돌아가기</button>
     </div>
   `;
   document.getElementById('headerTitle').textContent = 'SpeakUp';
   document.getElementById('settingsBtn').classList.remove('hidden');
+  document.querySelector('.tab-bar').style.display = '';
+  streakCount = 0;
 }
 
 // ===== FLASHCARD MODE =====
@@ -1962,91 +1945,140 @@ function renderFlashcard() {
 
   document.getElementById('headerTitle').textContent = `플래시카드 ${current}/${total}`;
   document.getElementById('settingsBtn').classList.add('hidden');
+  document.querySelector('.tab-bar').style.display = 'none';
 
-  const speedOptions = [0.5, 0.7, 1.0, 1.2, 1.5];
   let html = `
     <div style="text-align:center">
-      <div class="study-progress">
-        <span class="study-progress-text">${current}/${total}</span>
-        <div class="study-progress-bar">
-          <div class="study-progress-fill" style="width:${(current/total)*100}%"></div>
+      <div class="study-top-bar">
+        <button class="btn-ghost" onclick="exitFlashcard()">← 나가기</button>
+        <div style="flex:1;margin:0 12px">
+          <div style="height:6px;border-radius:3px;background:#E5E7EB">
+            <div style="width:${(current/total)*100}%;height:100%;border-radius:3px;background:var(--primary);transition:width 0.3s"></div>
+          </div>
         </div>
-        <span class="study-progress-text" style="color:var(--success)">✓ ${flashcardSession.correctCount}</span>
+        <span style="font-size:13px;color:var(--text-secondary);font-weight:600">✓ ${flashcardSession.correctCount} / ${total}</span>
       </div>
 
-      <div class="speed-control">
-        <span style="font-size:11px;color:var(--text-secondary)">속도:</span>
-        ${speedOptions.map(sp => `<button class="speed-btn ${studySpeedOverride === sp ? 'active' : ''}" onclick="setFlashcardSpeed(${sp})">${sp}x</button>`).join('')}
-        <button class="speed-btn" style="${studySpeedOverride === null ? 'background:var(--primary);color:white;border-color:var(--primary)' : ''}" onclick="setFlashcardSpeed(null)">자동</button>
-      </div>
-
-      <div class="flashcard">
-        <div class="flashcard-korean">${escHtml(s.korean)}</div>
-        ${s.memo ? `<div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">${escHtml(s.memo)}</div>` : ''}
+      <div class="flashcard-wrap" id="flashcardWrap">
+        <div class="flashcard" id="flashcardEl">
+          <div class="flashcard-korean">${escHtml(s.korean)}</div>
+          ${s.memo ? `<div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">${escHtml(s.memo)}</div>` : ''}
   `;
 
   if (flashcardSession.showAnswer) {
     html += `<div class="flashcard-english">${escHtml(s.english)}</div>`;
   }
 
-  // 결과 표시
   if (flashcardSession.lastMatch !== undefined && flashcardSession.lastSpoken) {
     const scoreClass = flashcardSession.lastMatch >= 80 ? 'score-high' : flashcardSession.lastMatch >= 50 ? 'score-medium' : 'score-low';
+    const wrongWords = getWrongWords(s.english, flashcardSession.lastSpoken);
     html += `
-      <div class="flashcard-result">
+      <div class="result-card" style="margin-top:12px">
         <div class="score-badge ${scoreClass}">일치율: ${flashcardSession.lastMatch}%</div>
         <div style="margin-top:8px;font-size:15px;line-height:1.8">
           ${flashcardSession.lastDiffHtml || `"${escHtml(flashcardSession.lastSpoken)}"`}
         </div>
+        ${wrongWords.length > 0 ? `
+          <button class="wrong-word-hint" onclick="speakWrongWords(${escHtml(JSON.stringify(wrongWords))})">
+            🔊 틀린 단어 듣기: ${escHtml(wrongWords.join(', '))}
+          </button>
+        ` : ''}
       </div>
     `;
-
-    if (flashcardSession.lastMatch < 80 && !flashcardSession.showAnswer) {
-      html += `<div style="color:var(--warning);font-size:14px;font-weight:600;margin-top:8px">다시 시도해보세요!</div>`;
-    }
   }
 
-  html += `</div>`; // close flashcard
+  html += `</div></div>`; // close flashcard + flashcard-wrap
 
-  // 마이크 애니메이션
-  if (isRecording) {
-    html += `
-      <div class="mic-listening-wrap">
-        <div class="mic-wave">
-          <div class="mic-wave-bar"></div><div class="mic-wave-bar"></div><div class="mic-wave-bar"></div>
-          <div class="mic-wave-bar"></div><div class="mic-wave-bar"></div><div class="mic-wave-bar"></div><div class="mic-wave-bar"></div>
+  // Speech area
+  html += `
+    <div class="speech-area ${isRecording ? 'recording' : ''}">
+      ${isRecording ? `
+        <div class="mic-inline">
+          <div class="mic-inline-bar"></div><div class="mic-inline-bar"></div><div class="mic-inline-bar"></div>
+          <div class="mic-inline-bar"></div><div class="mic-inline-bar"></div>
         </div>
-        <div class="mic-listening-label">🎤 듣고 있습니다...</div>
-      </div>
-    `;
-  }
+        <span style="color:var(--mic);font-size:14px">듣고 있습니다...</span>
+      ` : interimTranscript ? `
+        <span style="color:var(--text-secondary);font-style:italic">${escHtml(interimTranscript)}</span>
+      ` : `
+        <div class="placeholder">🎤 한국어를 보고 영어로 말해보세요</div>
+      `}
+    </div>
+  `;
 
-  if (interimTranscript) {
-    html += `<div class="speech-realtime interim">${escHtml(interimTranscript)}</div>`;
-  }
-
-  // 버튼
   if (!isRecording) {
-    html += `<div class="study-actions" style="margin-top:16px">`;
-    html += `<button class="btn-mic" onclick="recordFlashcard()">🎤</button>`;
-    html += `</div>`;
-
-    html += `<div style="display:flex;gap:8px;margin-top:12px">`;
-    html += `<button class="action-btn btn-secondary" onclick="retryFlashcard()" style="flex:1;justify-content:center">🔄 다시시도</button>`;
+    html += `<button class="main-action-btn mic-action" onclick="recordFlashcard()">🎤 영어로 말하기</button>`;
+    html += `<div style="display:flex;gap:8px;margin-top:10px">`;
     if (!flashcardSession.showAnswer) {
-      html += `<button class="action-btn btn-secondary" onclick="showFlashcardAnswer()" style="flex:1;justify-content:center">정답 보기</button>`;
+      html += `<button class="btn-ghost" onclick="showFlashcardAnswer()" style="flex:1">정답 보기</button>`;
+    } else {
+      html += `<button class="btn-ghost" onclick="speak('${s.english.replace(/'/g, "\\'")}')" style="flex:1">🔊 발음 듣기</button>`;
     }
-    html += `<button class="action-btn btn-secondary" onclick="nextFlashcard()" style="flex:1;justify-content:center">다음 ▶</button>`;
+    html += `<button class="btn-ghost" onclick="retryFlashcard()" style="flex:1">🔄 다시</button>`;
+    html += `<button class="btn-ghost" onclick="nextFlashcard()" style="flex:1">다음 →</button>`;
     html += `</div>`;
-
-    // 정답인 경우 듣기 버튼
-    if (flashcardSession.showAnswer) {
-      html += `<div style="margin-top:12px"><button class="action-btn btn-primary" onclick="speak('${s.english.replace(/'/g, "\\'")}')" style="margin:0 auto">🔊 발음 듣기</button></div>`;
-    }
+    html += `<p style="font-size:11px;color:var(--text-secondary);margin-top:12px">← 스와이프: 다시 | 스와이프 →: 다음</p>`;
   }
 
   html += `</div>`;
   mc.innerHTML = html;
+
+  // Attach swipe gesture handlers
+  initFlashcardSwipe();
+}
+
+// ===== Flashcard Swipe Gestures =====
+function initFlashcardSwipe() {
+  const el = document.getElementById('flashcardEl');
+  if (!el) return;
+  let startX = 0, currentX = 0, dragging = false;
+
+  el.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    dragging = true;
+    el.style.transition = 'none';
+  }, { passive: true });
+
+  el.addEventListener('touchmove', (e) => {
+    if (!dragging) return;
+    currentX = e.touches[0].clientX - startX;
+    el.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.05}deg)`;
+    el.style.opacity = Math.max(0.5, 1 - Math.abs(currentX) / 300);
+  }, { passive: true });
+
+  el.addEventListener('touchend', () => {
+    if (!dragging) return;
+    dragging = false;
+    el.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+
+    if (currentX > 80) {
+      // Swipe right → next
+      el.style.transform = 'translateX(300px) rotate(15deg)';
+      el.style.opacity = '0';
+      setTimeout(() => nextFlashcard(), 250);
+    } else if (currentX < -80) {
+      // Swipe left → retry
+      el.style.transform = 'translateX(-300px) rotate(-15deg)';
+      el.style.opacity = '0';
+      setTimeout(() => retryFlashcard(), 250);
+    } else {
+      el.style.transform = '';
+      el.style.opacity = '';
+    }
+    currentX = 0;
+  });
+}
+
+function exitFlashcard() {
+  window.speechSynthesis.cancel();
+  if (isRecording) stopRecognition();
+  flashcardSession = null;
+  studySpeedOverride = null;
+  interimTranscript = '';
+  document.getElementById('headerTitle').textContent = 'SpeakUp';
+  document.getElementById('settingsBtn').classList.remove('hidden');
+  document.querySelector('.tab-bar').style.display = '';
+  switchTab('practice');
 }
 
 function setFlashcardSpeed(speed) {
@@ -2151,17 +2183,19 @@ function finishFlashcard() {
       <p style="color:var(--text-secondary);margin-bottom:24px">
         총 누적 연습: ${state.totalPracticeCount || 0}회
       </p>
-      <button class="action-btn btn-primary" onclick="switchTab('study')" style="margin:0 auto">학습 홈으로</button>
+      <p style="font-size:18px;margin-bottom:24px">${getCheerMessage()}</p>
+      <button class="main-action-btn" onclick="switchTab('practice')">홈으로 돌아가기</button>
     </div>
   `;
   document.getElementById('headerTitle').textContent = 'SpeakUp';
   document.getElementById('settingsBtn').classList.remove('hidden');
+  document.querySelector('.tab-bar').style.display = '';
 }
 
 
-// ===== STATS TAB =====
-function renderStats(el) {
-  document.getElementById('headerTitle').textContent = '학습 통계';
+// ===== PROFILE TAB (Stats + Settings combined) =====
+function renderProfile(el) {
+  document.getElementById('headerTitle').textContent = '나';
   const streak = calcStreak();
   const total = state.sentences.length;
   const mastered = state.sentences.filter(s => s.interval >= 16).length;
@@ -2218,6 +2252,58 @@ function renderStats(el) {
     </div>
 
     <div class="card">
+      <div class="card-title">설정</div>
+
+      <div class="setting-row">
+        <span class="setting-label">문장 듣기 반복 횟수</span>
+        <div class="setting-value">
+          <button class="setting-btn" onclick="changeSettingInline('listenRepeat',-1)">-</button>
+          <span class="setting-num" id="set_listenRepeat">${state.settings.listenRepeat}</span>
+          <button class="setting-btn" onclick="changeSettingInline('listenRepeat',1)">+</button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <span class="setting-label">따라 말하기 반복 횟수</span>
+        <div class="setting-value">
+          <button class="setting-btn" onclick="changeSettingInline('speakRepeat',-1)">-</button>
+          <span class="setting-num" id="set_speakRepeat">${state.settings.speakRepeat}</span>
+          <button class="setting-btn" onclick="changeSettingInline('speakRepeat',1)">+</button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <span class="setting-label">하루 학습 목표 (문장)</span>
+        <div class="setting-value">
+          <button class="setting-btn" onclick="changeSettingInline('dailyGoal',-5)">-</button>
+          <span class="setting-num" id="set_dailyGoal">${state.settings.dailyGoal}</span>
+          <button class="setting-btn" onclick="changeSettingInline('dailyGoal',5)">+</button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <span class="setting-label">기본 발화 속도</span>
+        <div class="setting-value">
+          <button class="setting-btn" onclick="changeSpeechRate(-0.1)">-</button>
+          <span class="setting-num" id="set_speechRate">${state.settings.speechRate.toFixed(1)}x</span>
+          <button class="setting-btn" onclick="changeSpeechRate(0.1)">+</button>
+        </div>
+      </div>
+
+      <p style="font-size:12px;color:var(--text-secondary);margin-top:12px">
+        속도 패턴: 1회차 기본 → 2회차 느린(0.7x) → 3회차 기본 (반복)
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">강좌 데이터</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">기본동사 한국어-영어 1회 (100일)</p>
+      <button class="action-btn btn-primary" onclick="loadCourseData()" style="width:100%;justify-content:center">
+        강좌 문장 불러오기
+      </button>
+    </div>
+
+    <div class="card">
       <div class="card-title">데이터 관리</div>
       <div style="display:flex;gap:8px">
         <button class="action-btn btn-secondary" onclick="exportData()" style="flex:1;justify-content:center">내보내기</button>
@@ -2226,6 +2312,14 @@ function renderStats(el) {
       </div>
     </div>
   `;
+}
+
+function changeSettingInline(key, delta) {
+  const min = key === 'dailyGoal' ? 5 : 1;
+  const max = key === 'dailyGoal' ? 100 : 10;
+  state.settings[key] = Math.max(min, Math.min(max, (state.settings[key] || min) + delta));
+  document.getElementById('set_' + key).textContent = state.settings[key];
+  saveState();
 }
 
 // ===== SETTINGS =====
