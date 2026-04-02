@@ -688,7 +688,7 @@ body {
   padding: 12px 16px;
   background: #FAFAF9;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 .repeat100-log-item {
   padding: 10px 14px;
@@ -1775,7 +1775,13 @@ function startRepeat100(mode) {
 function stopRepeat100() {
   repeat100Active = false;
   window.speechSynthesis.cancel();
-  if (isRecording) stopRecognition();
+  if (recTimeoutId) { clearTimeout(recTimeoutId); recTimeoutId = null; }
+  if (recTimerInterval) { clearInterval(recTimerInterval); recTimerInterval = null; }
+  if (isRecording) {
+    try { recognition.abort(); } catch(e) {}
+    isRecording = false;
+    interimTranscript = '';
+  }
   closeRepeat100Popup();
   renderStudySession();
 }
@@ -1816,11 +1822,17 @@ function updateRepeat100UI() {
 
   const logEl = document.getElementById('r100Log');
   if (logEl && repeat100Logs.length > 0) {
+    // 기존 interim 제거
+    const oldInterim = document.getElementById('r100Interim');
+    if (oldInterim) oldInterim.remove();
+
     const last = repeat100Logs[repeat100Logs.length - 1];
     const item = document.createElement('div');
     item.className = `repeat100-log-item ${last.type}-log`;
     item.innerHTML = `<span class="log-num">#${last.num}</span>${last.text}${last.score !== undefined ? `<span class="log-score">${last.score}%</span>` : ''}`;
-    logEl.prepend(item);
+    logEl.appendChild(item);
+    // 자동 스크롤 맨 아래로
+    logEl.scrollTop = logEl.scrollHeight;
   }
 }
 
@@ -1909,7 +1921,7 @@ function doOneSpeak100() {
         interimEl.id = 'r100Interim';
         interimEl.className = 'repeat100-log-item speak-log';
         interimEl.style.opacity = '0.6';
-        logEl.prepend(interimEl);
+        logEl.appendChild(interimEl);
       }
       if (interimEl) {
         interimEl.innerHTML = `<span class="log-num">#${repeat100Count + 1}</span>${escHtml(interim)}...`;
@@ -1996,7 +2008,7 @@ function renderStudySession() {
         ` : interimTranscript ? `
           <span style="color:var(--text-secondary);font-style:italic">${escHtml(interimTranscript)}</span>
         ` : `
-          <div class="placeholder">🔊 다시듣기: 3회 반복 재생 | 🎤 말하기: 음성 녹음</div>
+          <div class="placeholder">아래 버튼을 눌러 학습하세요</div>
         `}
       </div>
     `;
